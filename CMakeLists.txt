@@ -3,6 +3,7 @@ project(KittehBot++)
 
 set(CMAKE_CXX_STANDARD 17)
 SET(VERSION "1.1.0")
+file (STRINGS "token.dat" TOKEN)
 set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "-std=c++1z")
 set(SOURCE_FILES main.cc)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
@@ -11,7 +12,7 @@ add_subdirectory(lib/discordpp)
 add_subdirectory(lib/rest-curlpp)
 add_subdirectory(lib/websocket-websocketpp)
 
-find_package(Boost REQUIRED system filesystem timer)
+find_package(Boost REQUIRED system filesystem timer regex)
 include_directories( include )
 
 

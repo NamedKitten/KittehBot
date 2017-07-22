@@ -9,6 +9,8 @@
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/timer.hpp>
+#include <boost/regex.hpp>
+
 
 namespace asio = boost::asio;
 
@@ -17,7 +19,6 @@ namespace asio = boost::asio;
 #include <discordpp/websocket-websocketpp.hh>
 #include <lib/nlohmannjson/src/json.hpp>
 #include <string>
-#include <trace.h>
 
 using json = nlohmann::json;
 using boost::system::error_code;
@@ -25,11 +26,11 @@ using aios_ptr = std::shared_ptr<asio::io_service>;
 
 std::string login(std::string authFilePath);
 std::map<std::string, std::string> loadSoftCommands(std::string softFilePath);
-
+//a
 int main() {
   std::cout << "Starting bot...\n\n";
   std::string token;
-  token = TOKEN
+  token = TOKEN;
 
   std::map<std::string, std::string> soft_commands =
       loadSoftCommands("softcommands.dat");
@@ -90,21 +91,13 @@ int main() {
               });
 
         } else if (m.compare(0, ech.length(), ech) == 0) {
-          std::string mentioncode =
-              "<@" + bot->me_["id"].get<std::string>() + ">";
+        boost::regex re("<@([0-9]+)>");
+        boost::regex prefixre("nya\\+\\+\\|");
           std::string content = message.substr(4, message.length());
-          while (content.find(mentioncode + ' ') != std::string::npos) {
-            content = content.substr(0, content.find(mentioncode + ' ')) +
-                      content.substr(content.find(mentioncode + ' ') +
-                                     (mentioncode + ' ').size());
-          }
-          while (content.find(mentioncode) != std::string::npos) {
-            content =
-                content.substr(0, content.find(mentioncode)) +
-                content.substr(content.find(mentioncode) + mentioncode.size());
-          }
+          std::string filtered = boost::regex_replace(content, re, "");
+          std::string filtereds = boost::regex_replace(filtered, prefixre, "");
           bot->call(asio_ios, "/channels/" + sid + "/messages",
-                    {{"content", content}}, "POST");
+                    {{"content", filtereds}}, "POST");
         } else if (message == "userinfo") {
             //pass
         } else if (m.compare(0, sta.length(), sta) == 0) {
