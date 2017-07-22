@@ -25,8 +25,7 @@ using aios_ptr = std::shared_ptr<asio::io_service>;
 
 std::string login(std::string authFilePath);
 std::map<std::string, std::string> loadSoftCommands(std::string softFilePath);
-std::string readTokenFile(std::string tokenFilePath);
-// a
+
 int main() {
   std::cout << "Starting bot...\n\n";
   std::string token;
@@ -175,21 +174,4 @@ std::map<std::string, std::string> loadSoftCommands(std::string softFilePath) {
   softfile.close();
 
   return soft_commands;
-}
-
-std::string readTokenFile(std::string tokenFilePath) {
-  std::ifstream tokenFile;
-  tokenFile.open(tokenFilePath);
-
-  std::string token;
-
-  if (tokenFile.is_open()) {
-    std::getline(tokenFile, token);
-  } else {
-    std::cerr << "Halp! u fail at leif...";
-    exit(1);
-  }
-  tokenFile.close();
-
-  return token;
 }
