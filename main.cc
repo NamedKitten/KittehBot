@@ -2,7 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <vector>
-
+#include <ctype.h>
+#include <chrono>
 #include "sysconf.h"
 #include <boost/algorithm/string.hpp>
 #include <boost/asio.hpp>
@@ -26,7 +27,38 @@ using aios_ptr = std::shared_ptr<asio::io_service>;
 
 std::string login(std::string authFilePath);
 std::map<std::string, std::string> loadSoftCommands(std::string softFilePath);
-//a
+
+std::string removeMentions(std::string content);
+void scan(std::string& content, const unsigned long i, const unsigned long oldi, const int frontSize);
+
+std::string removeMentions(std::string content){
+  unsigned long i;
+  unsigned long oldi;
+  for(i = content.size() - 22, oldi = i + 1; i < oldi; i = std::min(i - 1, content.size() - 22)){
+    if(content.substr(i, 3) == "<@!"){
+      scan(content, i, oldi, 3);
+    }else if(content.substr(i, 2) == "<@"){
+      scan(content, i, oldi, 2);
+    }
+    oldi = i;
+  }
+  return content;
+}
+
+void scan(std::string& content, const unsigned long i, const unsigned long oldi, const int frontSize){
+  bool isMention = true;
+  for(int n = i + frontSize; n < i + frontSize + 18 && isMention; n++){
+    isMention = isdigit(content.at(n));
+  }
+  if(isMention && content.at(i + frontSize + 18) == '>'){
+    if(content.size() > i + frontSize + 19 && content.at(i + frontSize + 19) == ' '){
+      content = content.substr(0, i) + content.substr(i + frontSize + 20);
+    }else{
+      content = content.substr(0, i) + content.substr(i + frontSize + 19);
+    }
+  }
+}
+
 int main() {
   std::cout << "Starting bot...\n\n";
   std::string token;
@@ -45,18 +77,18 @@ int main() {
   bot.addHandler("MESSAGE_CREATE", [soft_commands](discordpp::Bot *bot,
                                                    aios_ptr asio_ios,
                                                    json jmessage) {
-    std::string p("nya++|");
+    std::string p = PREFIX;
     std::string m = jmessage["content"].get<std::string>();
     std::string aid = jmessage["id"].get<std::string>();
     std::string cid = jmessage["channel_id"].get<std::string>();
     // std::cout << aid + " and " + cid << "\n";
     // std::cout << cha.dump(4) << "\n";
     std::string uid = jmessage["author"]["id"].get<std::string>();
-    std::string ech("nya++|echo ");
-    std::string sta("nya++|status ");
+    std::string ech = p + "echo ";
+    std::string sta = p + "status ";
     if (m.compare(0, p.length(), p) == 0) {
       std::string message = jmessage["content"].get<std::string>();
-      message = message.substr(6, message.length());
+      message = message.substr(p.length(), message.length());
       std::cout << "\"" + message + "\""
                 << "\n";
       auto it = soft_commands.find(message);
@@ -64,26 +96,34 @@ int main() {
       auto id = boost::lexical_cast<discordpp::snowflake>(sid);
       if (it == soft_commands.end()) {
         if (message == "version") {
-          std::string username = "KittehBot - nya~";
-          bot->call(asio_ios, "/channels/" + sid + "/messages",
-                    {{"content", "`" + username + "` version `" +
-                                     BOT_VERSION "` compiled with `" +
-                                     __VERSION__ + "`."}},
-                    "POST");
+            bot->call(
+     asio_ios, "/oauth2/applications/@me",
+     {}, "GET", [sid](discordpp::Bot *bot, aios_ptr asio_ios, json msg){
+         std::string username = msg["name"].get<std::string>();
+         bot->call(asio_ios, "/channels/" + sid + "/messages",
+                   {{"content", "`" + username + "` version `" +
+                                    BOT_VERSION "` compiled with `" +
+                                    __VERSION__ + "`."}},
+                   "POST");     });
+
         } else if (message == "ping") {
           //boost::timer myTimer;
-          int start_s=clock();
+          //int start_s=clock();
+          std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+
           bot->call(
               asio_ios, "/channels/" + sid + "/messages", {{"content", ".."}},
               "POST",
-              [sid, cid, start_s](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
+              [sid, cid, begin](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
                 std::string idb = msg["id"];
 
                 std::cout << "/channels/" + sid + "/messages/" + idb << "\n";
                 bot->call(asio_ios, "/channels/" + sid + "/messages/" + idb,
                           {{"content", "..."}}, "PATCH");
-                int stop_s=clock();
-                int elapsed = (stop_s-start_s)/double(CLOCKS_PER_SEC)*1000;
+                //int stop_s=clock();
+                std::chrono::steady_clock::time_point end= std::chrono::steady_clock::now();
+                int elapsed = std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count();
                 bot->call(asio_ios, "/channels/" + sid + "/messages/" + idb,
                           {{"content", "Pong! Time taken to send and edit message: `" + boost::lexical_cast<std::string>(
                                            elapsed) + "`ms."}},
@@ -91,13 +131,10 @@ int main() {
               });
 
         } else if (m.compare(0, ech.length(), ech) == 0) {
-        boost::regex re("<@([0-9]+)>");
-        boost::regex prefixre("nya\\+\\+\\|");
           std::string content = message.substr(4, message.length());
-          std::string filtered = boost::regex_replace(content, re, "");
-          std::string filtereds = boost::regex_replace(filtered, prefixre, "");
+          std::string filtered = removeMentions(content);
           bot->call(asio_ios, "/channels/" + sid + "/messages",
-                    {{"content", filtereds}}, "POST");
+                    {{"content", filtered}}, "POST");
         } else if (message == "userinfo") {
             //pass
         } else if (m.compare(0, sta.length(), sta) == 0) {

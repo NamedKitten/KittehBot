@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.7)
 project(KittehBot++)
 
 set(CMAKE_CXX_STANDARD 17)
-SET(VERSION "1.1.0")
+SET(VERSION "1.2.0")
 set(CMAKE_EXE_LINKER_FLAGS    "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_SHARED_LINKER_FLAGS}")
 file (STRINGS "token.dat" TOKEN)
