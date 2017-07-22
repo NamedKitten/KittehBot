@@ -30,7 +30,7 @@ std::string readTokenFile(std::string tokenFilePath);
 int main() {
   std::cout << "Starting bot...\n\n";
   std::string token;
-  token = readTokenFile("token.dat");
+  token = TOKEN
 
   std::map<std::string, std::string> soft_commands =
       loadSoftCommands("softcommands.dat");
@@ -64,11 +64,6 @@ int main() {
       auto id = boost::lexical_cast<discordpp::snowflake>(sid);
       if (it == soft_commands.end()) {
         if (message == "version") {
-          /*json j(bot->call(
-              asio_ios, "/oauth2/applications/@me",
-              "Bot
-             MzM1ODQ2MjEzNDc3ODU5MzQ5.DEvsuQ.nNz84IyV68getasj4oG7qovL7do",
-              {}, "GET"));*/
           std::string username = "KittehBot - nya~";
           bot->call(asio_ios, "/channels/" + sid + "/messages",
                     {{"content", "`" + username + "` version `" +
@@ -112,38 +107,7 @@ int main() {
           bot->call(asio_ios, "/channels/" + sid + "/messages",
                     {{"content", content}}, "POST");
         } else if (message == "userinfo") {
-          // json embed ({'thumbnail': {'url':
-          // 'https://cdn.discordapp.com/avatars/305058659799400448/398ac0171d5b17f7fafe7ac0aee9e5f2.png?size=256'},
-          // 'type': 'rich', 'title': '<:online:314049328459022338> NamedKitten -
-          // nya~#8468', 'fields': [{'value': '**This server**: 23 days,
-          // 5:27:02.038908 ago (2017-06-27 16:24:37.057000)\n**Discord**: 90
-          // days, 2:37:26.883921 ago (2017-04-21 19:14:12.212000)', 'inline':
-          // True, 'name': 'Join Dates'}, {'value': '<@&220868765242490880>,
-          // <@&173469998176534528>', 'inline': True, 'name': 'Roles'}]});
-          std::cout << "ye";
-          json jsons(R"({
-   "thumbnail":{
-      "url":"https://cdn.discordapp.com/avatars/305058659799400448/398ac0171d5b17f7fafe7ac0aee9e5f2.png?size=256"
-   },
-   "title":"NamedKitten - nya~#8468",
-   "type":"rich",
-   "fields":[
-      {
-         "inline":true,
-         "value":"**This server**: 23 days, 23:09:02.882398 ago \n**Discord**: 90 days, 20:19:27.727413 ago",
-         "name":"Join Dates"
-      },
-      {
-         "inline":true,
-         "value":"<@&220868765242490880>, <@&173469998176534528>",
-         "name":"Roles"
-      }
-   ],
-   "description":"**Display name**: NamedKitten - nya~\n**ID**: 305058659799400448"
-})");
-          bot->call(asio_ios, "/channels/" + sid + "/messages",
-                    {{"content", "hi"}/*, {"embed", jsons}*/}, "POST");
-
+            //pass
         } else if (m.compare(0, sta.length(), sta) == 0) {
             std::string status = message.substr(7, message.length());
             std::cout << "\"" + status + "\""
