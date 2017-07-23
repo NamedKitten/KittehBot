@@ -147,10 +147,10 @@ aios_ptr aios = std::make_shared<asio::io_service>();
       if (it == soft_commands.end()) {
         if (message == "version") {
             bot->call(
-     asio_ios, "/oauth2/applications/@me",
-     {}, "GET", [sid](discordpp::Bot *bot, aios_ptr asio_ios, json msg){
+     "/oauth2/applications/@me",
+     {}, "GET", [sid](discordpp::Bot *bot, json msg){
          std::string username = msg["name"].get<std::string>();
-         bot->call(asio_ios, "/channels/" + sid + "/messages",
+         bot->call("/channels/" + sid + "/messages",
                    {{"content", "`" + username + "` version `" +
                                     BOT_VERSION "` compiled with `" +
                                     __VERSION__ + "`."}},
@@ -174,9 +174,9 @@ aios_ptr aios = std::make_shared<asio::io_service>();
             em.set_image("https://cdn.discordapp.com/embed/avatars/0.png");
             em.set_author("author name", "https://discordapp.com", "https://cdn.discordapp.com/embed/avatars/0.png");
             std::cout << em.data.dump(4) << "\n";
-            bot->call(asio_ios, "/channels/" + sid + "/messages",
+            bot->call("/channels/" + sid + "/messages",
                       {{"embed", em.data}},
-                      "POST", [](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {std::cout << msg.dump(4) << "\n";});
+                      "POST", [](discordpp::Bot *bot, json msg) {std::cout << msg.dump(4) << "\n";});
         }
          else if (message == "ping") {
           //boost::timer myTimer;
@@ -185,18 +185,18 @@ aios_ptr aios = std::make_shared<asio::io_service>();
 
 
           bot->call(
-              asio_ios, "/channels/" + sid + "/messages", {{"content", ".."}},
+              "/channels/" + sid + "/messages", {{"content", ".."}},
               "POST",
-              [sid, cid, begin](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
+              [sid, cid, begin](discordpp::Bot *bot, json msg) {
                 std::string idb = msg["id"];
 
                 std::cout << "/channels/" + sid + "/messages/" + idb << "\n";
-                bot->call(asio_ios, "/channels/" + sid + "/messages/" + idb,
+                bot->call("/channels/" + sid + "/messages/" + idb,
                           {{"content", "..."}}, "PATCH");
                 //int stop_s=clock();
                 std::chrono::steady_clock::time_point end= std::chrono::steady_clock::now();
                 int elapsed = std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count();
-                bot->call(asio_ios, "/channels/" + sid + "/messages/" + idb,
+                bot->call("/channels/" + sid + "/messages/" + idb,
                           {{"content", "Pong! Time taken to send and edit message: `" + boost::lexical_cast<std::string>(
                                            elapsed) + "`ms."}},
                           "PATCH");
@@ -205,7 +205,7 @@ aios_ptr aios = std::make_shared<asio::io_service>();
         } else if (m.compare(0, ech.length(), ech) == 0) {
           std::string content = message.substr(4, message.length());
           std::string filtered = removeMentions(content);
-          bot->call(asio_ios, "/channels/" + sid + "/messages",
+          bot->call("/channels/" + sid + "/messages",
                     {{"content", filtered}}, "POST");
         } else if (message == "userinfo") {
             Embed em;
@@ -215,16 +215,16 @@ aios_ptr aios = std::make_shared<asio::io_service>();
             em.set_author(fu, "", au);
 
             bot->call(
-                asio_ios, "/channels/" + sid, {},
+                "/channels/" + sid, {},
                 "GET",
-                [sid, jmessage, em, uid](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
+                [sid, jmessage, em, uid](discordpp::Bot *bot, json msg) {
                   std::string gid = msg["guild_id"].get<std::string>();
                   json gui = msg;
                   std::cout << msg.dump(4) << "\n";
                   bot->call(
-                      asio_ios, "/guilds/" + gid + "/members/" + uid, {},
+                      "/guilds/" + gid + "/members/" + uid, {},
                       "GET",
-                      [sid, jmessage, em, gid, uid, gui](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
+                      [sid, jmessage, em, gid, uid, gui](discordpp::Bot *bot, json msg) {
                         json mem = msg;
                         std::cout << mem.dump(4) << "\n";
             //            std::stringstream roles;
@@ -233,9 +233,9 @@ aios_ptr aios = std::make_shared<asio::io_service>();
 //}
 //                em.add_field("Roles", roles.get<std::string>(), true);
                   std::cout << em.data.dump(4) << "\n";
-                  bot->call(asio_ios, "/channels/" + sid + "/messages",
+                  bot->call("/channels/" + sid + "/messages",
                             {{"embed", em.data}},
-                            "POST", [](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {std::cout << msg.dump(4) << "\n";});
+                            "POST", [](discordpp::Bot *bot, json msg) {std::cout << msg.dump(4) << "\n";});
 
                 });
                 });
@@ -253,7 +253,7 @@ aios_ptr aios = std::make_shared<asio::io_service>();
 }
       } else {
 
-        bot->call(asio_ios, "/channels/" + sid + "/messages",
+        bot->call("/channels/" + sid + "/messages",
                   {{"content", it->second}}, "POST");
       }
     }
