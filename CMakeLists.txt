@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.6)
 project(KittehBot++)
 
 set(CMAKE_CXX_STANDARD 17)
@@ -6,15 +6,14 @@ SET(VERSION "1.2.0")
 set(CMAKE_EXE_LINKER_FLAGS    "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_SHARED_LINKER_FLAGS}")
 file (STRINGS "token.dat" TOKEN)
-set(CMAKE_FIND_LIBRARY_SUFFIXES .so .a)
 set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "-std=c++1z")
 set(SOURCE_FILES main.cc)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_subdirectory(lib/discordpp)
 add_subdirectory(lib/rest-curlpp)
 add_subdirectory(lib/websocket-websocketpp)
-set(Boost_STATIC ON)
-set(Boost_USE_STATIC_LIBS   ON)
+#set(Boost_STATIC ON)
+#set(Boost_USE_STATIC_LIBS   ON)
 
 
 find_package(Boost REQUIRED system filesystem timer regex)

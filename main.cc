@@ -25,6 +25,59 @@ using json = nlohmann::json;
 using boost::system::error_code;
 using aios_ptr = std::shared_ptr<asio::io_service>;
 
+class Embed
+{
+ public:
+json data = {{"fields", {}}};
+
+ void set_description(std::string description)
+ {
+  data["description"] = description;
+ }
+ void set_title(std::string title)
+ {
+  data["title"] = title;
+ }
+ void set_timestamp(std::string timestamp)
+ {
+  data["timestamp"] = timestamp;
+ }
+ void set_url(std::string url)
+ {
+  data["url"] = url;
+ }
+ void set_color(int color)
+ {
+  data["color"] = color;
+ }
+ void set_image(std::string url)
+ {
+  json image = {{"url", url}};
+  data["image"] = image;
+ }
+ void set_thumbnail(std::string url)
+ {
+  json thumbnail = {{"url", url}};
+  data["thumbnail"] = thumbnail;
+ }
+ void set_footer(std::string text, std::string icon_url = "")
+ {
+  json footer = {{"text", text}, {"icon_url", icon_url}};
+  data["footer"] = footer;
+ }
+ void add_field(std::string name, std::string value, bool display_inline = false)
+ {
+  json field = {{"name", name}, {"value", value}, {"inline", display_inline}};
+  data["fields"].push_back(field);
+ }
+ void set_author(std::string name, std::string url = "", std::string icon_url = "")
+ {
+  json author = {{"name", name}, {"url", url}, {"icon_url", icon_url}};
+  data["author"] = author;
+ }
+
+};
+
 std::string login(std::string authFilePath);
 std::map<std::string, std::string> loadSoftCommands(std::string softFilePath);
 
@@ -81,8 +134,7 @@ int main() {
     std::string m = jmessage["content"].get<std::string>();
     std::string aid = jmessage["id"].get<std::string>();
     std::string cid = jmessage["channel_id"].get<std::string>();
-    // std::cout << aid + " and " + cid << "\n";
-    // std::cout << cha.dump(4) << "\n";
+    std::cout << jmessage.dump(4) << "\n";
     std::string uid = jmessage["author"]["id"].get<std::string>();
     std::string ech = p + "echo ";
     std::string sta = p + "status ";
@@ -106,7 +158,29 @@ int main() {
                                     __VERSION__ + "`."}},
                    "POST");     });
 
-        } else if (message == "ping") {
+        } else if (message == "test") {
+            Embed em;
+
+            em.set_description("this supports [named links](https://discordapp.com) on top of the previously shown subset of markdown. ```\nyes, even code blocks```");
+            em.add_field(":thinking:", "some of these properties have certain limits...");
+            em.add_field(":scream:", "try exceeding some of them!");
+            em.add_field(":rolling_eyes:", "an informative error should show up, and this view will remain as-is until all issues are fixed");
+            em.add_field("<:thonkang:219069250692841473>", "these last two", true);
+            em.add_field("<:thonkang:219069250692841473>", "are inline fields", true);
+            em.set_title("title ~~(did you know you can have markdown here too?)~~");
+            em.set_url("https://discordapp.com");
+            em.set_color(5034194);
+            em.set_timestamp("2017-07-22T18:50:40.383Z");
+            em.set_footer("footer text", "https://cdn.discordapp.com/embed/avatars/0.png");
+            em.set_thumbnail("https://cdn.discordapp.com/embed/avatars/0.png");
+            em.set_image("https://cdn.discordapp.com/embed/avatars/0.png");
+            em.set_author("author name", "https://discordapp.com", "https://cdn.discordapp.com/embed/avatars/0.png");
+            std::cout << em.data.dump(4) << "\n";
+            bot->call(asio_ios, "/channels/" + sid + "/messages",
+                      {{"embed", em.data}},
+                      "POST", [](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {std::cout << msg.dump(4) << "\n";});
+        }
+         else if (message == "ping") {
           //boost::timer myTimer;
           //int start_s=clock();
           std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
@@ -136,7 +210,37 @@ int main() {
           bot->call(asio_ios, "/channels/" + sid + "/messages",
                     {{"content", filtered}}, "POST");
         } else if (message == "userinfo") {
-            //pass
+            Embed em;
+            std::string fu = jmessage["author"]["username"].get<std::string>() + "#" + jmessage["author"]["discriminator"].get<std::string>();
+            std::string au = "https://cdn.discordapp.com/avatars/" + uid + "/" + jmessage["author"]["avatar"].get<std::string>() + ".png?size=256";
+            em.set_thumbnail(au);
+            em.set_author(fu, "", au);
+
+            bot->call(
+                asio_ios, "/channels/" + sid, {},
+                "GET",
+                [sid, jmessage, em, uid](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
+                  std::string gid = msg["guild_id"].get<std::string>();
+                  json gui = msg;
+                  std::cout << msg.dump(4) << "\n";
+                  bot->call(
+                      asio_ios, "/guilds/" + gid + "/members/" + uid, {},
+                      "GET",
+                      [sid, jmessage, em, gid, uid, gui](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {
+                        json mem = msg;
+                        std::cout << mem.dump(4) << "\n";
+            //            std::stringstream roles;
+            //for(auto role : mem["roles"]){
+            //    roles << "<@&"role.get<std::string>() + "> ";
+//}
+//                em.add_field("Roles", roles.get<std::string>(), true);
+                  std::cout << em.data.dump(4) << "\n";
+                  bot->call(asio_ios, "/channels/" + sid + "/messages",
+                            {{"embed", em.data}},
+                            "POST", [](discordpp::Bot *bot, aios_ptr asio_ios, json msg) {std::cout << msg.dump(4) << "\n";});
+
+                });
+                });
         } else if (m.compare(0, sta.length(), sta) == 0) {
             std::string status = message.substr(7, message.length());
             std::cout << "\"" + status + "\""
