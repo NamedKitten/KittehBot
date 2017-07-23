@@ -10,7 +10,6 @@
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/timer.hpp>
-#include <boost/regex.hpp>
 
 
 namespace asio = boost::asio;
@@ -124,11 +123,10 @@ int main() {
   for (auto elem : soft_commands) {
     std::cout << elem.first << "\n" << elem.second << "\n\n";
   }
-
-  discordpp::Bot bot(token, std::make_shared<discordpp::RestCurlPPModule>(),
-                     std::make_shared<discordpp::WebsocketWebsocketPPModule>());
+aios_ptr aios = std::make_shared<asio::io_service>();
+  discordpp::Bot bot(aios, token, std::make_shared<discordpp::RestCurlPPModule>(aios, token),
+                     std::make_shared<discordpp::WebsocketWebsocketPPModule>(aios, token));
   bot.addHandler("MESSAGE_CREATE", [soft_commands](discordpp::Bot *bot,
-                                                   aios_ptr asio_ios,
                                                    json jmessage) {
     std::string p = PREFIX;
     std::string m = jmessage["content"].get<std::string>();
@@ -269,10 +267,7 @@ int main() {
   // ignore
   //});
 
-  aios_ptr asio_ios = std::make_shared<asio::io_service>();
-  bot.init(asio_ios);
-  asio_ios->run();
-  return 0;
+  aios->run();
 }
 std::map<std::string, std::string> loadSoftCommands(std::string softFilePath) {
   std::ifstream softfile;
