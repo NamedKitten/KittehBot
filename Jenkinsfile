@@ -9,7 +9,7 @@ pipeline {
         WEBHOOK_URL = credentials('WEBHOOK_URL')
     }
     stages {
-        stage('Compile') {
+        stage('Test') {
             steps {
                 sh 'bash build.sh'
             }
