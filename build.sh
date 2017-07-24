@@ -21,3 +21,4 @@ echo "using make"
 make clean
 make -j`grep -c '^processor' /proc/cpuinfo`
 echo "o.o it is done o.o"
+cd ..
