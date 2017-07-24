@@ -1,4 +1,5 @@
 #!/bin/bash
+echo `whoami`
 echo "doing teh git"
 git submodule update --init --recursive --remote --force
 echo "making teh build"
@@ -18,5 +19,5 @@ echo "using teh cmake"
 cmake-3.9.0-Linux-x86_64/bin/cmake ..
 echo "using make"
 make clean
-make -j7
+make -j`grep -c '^processor' /proc/cpuinfo`
 echo "o.o it is done o.o"
