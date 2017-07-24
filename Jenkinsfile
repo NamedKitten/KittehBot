@@ -2,7 +2,7 @@ pipeline {
     agent {
         docker {
             image 'namedkitten/cpp-env'
-	    args  '-u 0'
+	          args  '-u 0'
         }
     }
     environment {
@@ -11,6 +11,7 @@ pipeline {
     stages {
         stage('Test') {
             steps {
+                echo "Doing the build."
                 sh 'bash build.sh'
             }
         }
