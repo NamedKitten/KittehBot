@@ -1,5 +1,4 @@
 #pragma once
-#define BOT_VERSION              "@VERSION@"
+#define BOT_VERSION "@VERSION@"
 #define STDC_HEADERS 1
-#define PREFIX "nya++|"
-#define TOKEN "@TOKEN@"
+#define TEST "@TEST@"

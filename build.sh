@@ -1,7 +1,6 @@
 #!/bin/bash
 echo "doing teh git"
 git submodule update --init --recursive
-echo "boop" > token.dat
 echo "making teh build"
 mkdir build
 echo "going into build"

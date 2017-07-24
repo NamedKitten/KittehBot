@@ -1,22 +1,28 @@
 cmake_minimum_required(VERSION 3.6)
+
 project(KittehBot++)
 
 set(CMAKE_CXX_STANDARD 17)
 SET(VERSION "1.2.0")
+set(TEST "${TEST}")
 set(CMAKE_EXE_LINKER_FLAGS    "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
 set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_SHARED_LINKER_FLAGS}")
-file (STRINGS "token.dat" TOKEN)
 set(CMAKE_CXX17_EXTENSION_COMPILE_OPTION "-std=c++1z")
 set(SOURCE_FILES main.cc)
+set_source_files_properties(main.cc PROPERTIES RULE_LAUNCH_COMPILE ccache)
+set_source_files_properties(main.cc PROPERTIES RULE_LAUNCH_LINK ccache)
+
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_subdirectory(lib/discordpp)
 add_subdirectory(lib/rest-curlpp)
 add_subdirectory(lib/websocket-websocketpp)
+add_subdirectory(lib/redisclient)
 #set(Boost_STATIC ON)
 #set(Boost_USE_STATIC_LIBS   ON)
 
 
-find_package(Boost REQUIRED system filesystem timer regex)
+find_package(Boost REQUIRED system filesystem timer regex thread)
 include_directories( include )
 
 
@@ -26,7 +32,7 @@ include_directories(${CMAKE_BINARY_DIR} ${CMAKE_SOURCE_DIR}/include ${OPENSSL_IN
 
 
 # -ggdb -g3
-set(CFLAGS "${CFLAGS}")
+set(CFLAGS "${CFLAGS} ")
 set(CMAKE_C_FLAGS "${CFLAGS} ")
 
 set(CMAKE_CXX_FLAGS "${CFLAGS} ")
@@ -39,6 +45,7 @@ INCLUDE_DIRECTORIES(
         ${discordpp-rest-curlpp_SOURCE_DIR}
         ${discordpp-websocket-websocketpp_SOURCE_DIR}
         ${nlohmann_json_include_dir}
+        lib/redisclient/src
 )
 
 TARGET_LINK_LIBRARIES(
@@ -47,9 +54,10 @@ TARGET_LINK_LIBRARIES(
         discordpp
         discordpp-rest-curlpp
         discordpp-websocket-websocketpp
+        redisclient
 )
 
-foreach(DATFILE softcommands.dat token.dat) #login.dat
+foreach(DATFILE time.py) #login.dat
 
     if(EXISTS ${DATFILE})
         configure_file(${DATFILE} ${DATFILE} COPYONLY)

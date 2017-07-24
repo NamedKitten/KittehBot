@@ -7,3 +7,6 @@
 [submodule "lib/rest-curlpp"]
 	path = lib/rest-curlpp
 	url = https://github.com/DiscordPP/rest-curlpp.git
+[submodule "lib/redisclient"]
+	path = lib/redisclient
+	url = https://github.com/nekipelov/redisclient.git

@@ -5,13 +5,13 @@ pipeline {
 	    args  '-u 0'
         }
     }
-    environment { 
-        WEBHOOK_URL = credentials('WEBHOOK_URL') 
+    environment {
+        WEBHOOK_URL = credentials('WEBHOOK_URL')
     }
     stages {
         stage('Compile') {
             steps {
-                sh 'build.sh'
+                sh 'bash build.sh'
             }
         }
     }
