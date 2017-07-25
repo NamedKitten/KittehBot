@@ -1,5 +1,5 @@
 #!/bin/bash
-echo `whoami`
+echo `whoami`r
 echo "doing teh git"
 git submodule update --init --recursive --remote --force
 echo "making teh build"
