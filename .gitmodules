@@ -10,4 +10,3 @@
 [submodule "lib/redisclient"]
 	path = lib/redisclient
 	url = https://github.com/nekipelov/redisclient.git
-
