@@ -1,25 +1,19 @@
 #include <string>
 #include <discordpp/bot.hh>
-#include <lib/nlohmannjson/src/json.hpp>
+#include <bot_utils/bothelper.hpp>
+#include <bot_utils/shell.hpp>
 using json = nlohmann::json;
 
 void shell_command(std::string message, std::string sid, std::string uid, discordpp::Bot *bot) {
-  bot->call(
-    "/oauth2/applications/@me",
-    {}, "GET", [sid, message, uid](discordpp::Bot *bot, json msg){
+  json application = get_application(bot);
 
-  if (msg["owner"]["id"].get<std::string>() == uid) {
+  if (application["owner"]["id"].get<std::string>() == uid) {
   std::string command = message.substr(6, message.length());
 
 
-    bot->call("/channels/" + sid + "/messages",
-              {{"content", "```shell\n" + shell(command) + "\n```" }},
-              "POST");
+    json ret = send_message(bot, sid, {{"content", "```shell\n" + shell(command) + "\n```"}});
 
             } else {
-                bot->call("/channels/" + sid + "/messages",
-                          {{"content", "Only the bots owner (" + msg["owner"]["username"].get<std::string>() + ") can use this command." }},
-                          "POST");
+                send_message(bot, sid, {{"content", "Only the bots owner (" + application["owner"]["username"].get<std::string>() + ") can use this command."}});
               }
-            });
 }

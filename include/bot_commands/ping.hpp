@@ -1,30 +1,22 @@
-#include <string>
+#include <bot_utils/bothelper.hpp>
 #include <discordpp/bot.hh>
-#include <lib/nlohmannjson/src/json.hpp>
+#include <string>
 using json = nlohmann::json;
 
 void ping_command(std::string sid, std::string cid, discordpp::Bot *bot) {
-  //boost::timer myTimer;
-  //int start_s=clock();
-  std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+  std::chrono::steady_clock::time_point begin =
+      std::chrono::steady_clock::now();
 
+  json msg = send_message(bot, sid, {{"content", ".."}});
+  std::string idb = msg["id"];
 
-  bot->call(
-      "/channels/" + sid + "/messages", {{"content", ".."}},
-      "POST",
-      [sid, cid, begin](
-        discordpp::Bot *bot, json msg) {
-        std::string idb = msg["id"];
-
-        std::cout << "/channels/" + sid + "/messages/" + idb << "\n";
-        bot->call("/channels/" + sid + "/messages/" + idb,
-                  {{"content", "..."}}, "PATCH");
-        //int stop_s=clock();
-        std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-        int elapsed = std::chrono::duration_cast<std::chrono::milliseconds> (end - begin).count();
-        bot->call("/channels/" + sid + "/messages/" + idb,
-                  {{"content", "Pong! Time taken to send and edit message: `" + boost::lexical_cast<std::string>(
-                                   elapsed) + "`ms."}},
-                  "PATCH");
-      });
+  edit_message(bot, sid, idb, {{"content", "..."}});
+  std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+  int elapsed =
+      std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
+          .count();
+  edit_message(
+      bot, sid, idb,
+      {{"content", "Pong! Time taken to send and edit message: `" +
+                       boost::lexical_cast<std::string>(elapsed) + "`ms."}});
 }

@@ -1,16 +1,13 @@
-#include <string>
+#include <bot_utils/bothelper.hpp>
 #include <discordpp/bot.hh>
-#include <lib/nlohmannjson/src/json.hpp>
+#include <string>
 using json = nlohmann::json;
 
-void version_command(std::string sid, discordpp::Bot *bot) {
-  bot->call(
-  "/oauth2/applications/@me",
-  {}, "GET", [sid](discordpp::Bot *bot, json msg){
-  std::string username = msg["name"].get<std::string>();
-  bot->call("/channels/" + sid + "/messages",
-         {{"content", "`" + username + "` version `" +
-                          BOT_VERSION "` compiled with `" +
-                          __VERSION__ + "`."}},
-         "POST");     });
+void version_command(json jmessage, discordpp::Bot *bot) {
+  json application = get_application(bot);
+  std::string username = application["name"].get<std::string>();
+  std::string channel_id = jmessage["channel_id"].get<std::string>();
+  send_message(bot, channel_id, {{"content", "`" + username + "` version `" +
+                                            BOT_VERSION "` compiled with `" +
+                                            __VERSION__ + "`."}});
 }
