@@ -23,8 +23,6 @@ set(Boost_USE_STATIC_LIBS   ON)
 set_target_properties(parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
 find_package(Boost REQUIRED system timer)
-include_directories( include ${json_SOURCE_DIR} )
-
 
 message(STATUS "${PROJECT_NAME} version: ${VERSION_FULL}")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sysconf.h)
@@ -58,7 +56,7 @@ TARGET_LINK_LIBRARIES(
         redisclient
 )
 
-foreach(FILE time.py) #login.dat
+foreach(FILE time.py)
     if(EXISTS ${FILE})
         configure_file(${FILE} ${FILE} COPYONLY)
     endif()
