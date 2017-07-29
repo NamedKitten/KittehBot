@@ -1,4 +1,4 @@
-void userinfo_command(json jmessage,
+svoid userinfo_command(json jmessage,
                       discordpp::Bot *bot) {
   std::string user_id = jmessage["author"]["id"].get<std::string>();
   std::string channel_id = jmessage["channel_id"].get<std::string>();
