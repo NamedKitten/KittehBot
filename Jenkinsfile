@@ -19,7 +19,6 @@ pipeline {
     post {
         always {
             sh 'apt install python3-pip -y && pip3 install requests'
- 	    cleanWs notFailBuild: true
         }
         success {
         sh 'python3 jenkins.py success $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
@@ -30,5 +29,8 @@ pipeline {
         unstable {
         sh 'python3 jenkins.py unstable $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
         }
+always {
+cleanWs notFailBuild: true
+}
     }
 }
