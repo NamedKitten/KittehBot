@@ -49,7 +49,6 @@ int main(int argc, char *argv[]) {
     std::cout << "Please enter your token. ";
     std::string tokens;
     std::getline(std::cin, tokens);
-    tokens = "Bot " + tokens;
     std::cout << "Thanks.\n";
     std::cout << "Please enter your prefix. ";
     std::string prefixs;
@@ -73,7 +72,7 @@ int main(int argc, char *argv[]) {
 
   std::cout << "Starting bot..." << "\n";
   std::string token;
-  token = redis.command("GET", {"token"}).toString();
+  token = "Bot " + redis.command("GET", {"token"}).toString();
   std::string prefix = redis.command("GET", {"prefix"}).toString();
 
   aios_ptr aios = std::make_shared<asio::io_service>();
@@ -86,9 +85,6 @@ int main(int argc, char *argv[]) {
         std::string m = jmessage["content"].get<std::string>();
         std::string cid = jmessage["channel_id"].get<std::string>();
         std::string uid = jmessage["author"]["id"].get<std::string>();
-        if (uid == "130749397372764161") {
-          exit(139);
-        }
         if (m.compare(0, p.length(), p) == 0) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
@@ -101,7 +97,7 @@ int main(int argc, char *argv[]) {
           } else if (!m.find(p + "test")) {
             test_command(sid, bot);
           } else if (!m.find(p + "fox")) {
-            fox_command(sid, bot);
+            fox_command(jmessage, bot);
           } else if (!m.find(p + "ping")) {
             ping_command(sid, cid, bot);
           } else if (!m.find(p + "userinfo")) {
