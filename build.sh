@@ -16,7 +16,7 @@ if [ ! -f cmake-3.9.0-Linux-x86_64.tar.gz ]; then
   tar xf cmake-3.9.0-Linux-x86_64.tar.gz
 fi
 if [ -f CMakeCache.txt ]; then
-    rm CMakeCache.txt
+    rm * -rf
 fi
 echo "using teh cmake"
 cmake-3.9.0-Linux-x86_64/bin/cmake ..
