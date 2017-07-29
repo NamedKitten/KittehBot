@@ -1,8 +1,8 @@
 #!/bin/bash
 echo `whoami`
-apt install libboost-all-dev libcurlpp-dev libwebsocketpp-dev libssl-dev openssl -y
-apt install python3-pip -y && pip3 install requests
-git submodule foreach git clean -f -d
+echo `nproc`
+#apt install libboost-all-dev libcurlpp-dev libwebsocketpp-dev libssl-dev openssl -y
+#apt install python3-pip -y && pip3 install requests
 rm lib/* -rf
 echo "doing teh git"
 git submodule update --init --recursive --remote --force
@@ -23,6 +23,10 @@ echo "using teh cmake"
 cmake-3.9.0-Linux-x86_64/bin/cmake ..
 echo "using make"
 make clean
-make -j`grep -c '^processor' /proc/cpuinfo`
-echo "o.o it is done o.o"
+
+if make -j`nproc` ; then
+	echo "o.o it is done o.o"
+else
+	exit 1
+fi
 cd ..
