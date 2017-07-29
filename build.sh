@@ -25,6 +25,7 @@ cmake .. -DTEST=yes
 echo "using make"
 make clean
 if make -j`nproc` ; then
+	redis-server &
 	./KittehBot++
 else
 	exit 1
