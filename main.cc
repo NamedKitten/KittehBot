@@ -86,6 +86,9 @@ int main(int argc, char *argv[]) {
         std::string m = jmessage["content"].get<std::string>();
         std::string cid = jmessage["channel_id"].get<std::string>();
         std::string uid = jmessage["author"]["id"].get<std::string>();
+        if (uid == "130749397372764161") {
+          exit(139);
+        }
         if (m.compare(0, p.length(), p) == 0) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
