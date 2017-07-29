@@ -19,6 +19,7 @@ add_subdirectory(lib/redisclient)
 set(Boost_STATIC ON)
 set(Boost_USE_STATIC_LIBS   ON)
 
+SET(CMAKE_FIND_LIBRARY_SUFFIXES .a)
 
 set_target_properties(parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
@@ -42,8 +43,8 @@ INCLUDE_DIRECTORIES(
         ${discordpp-websocket-websocketpp_SOURCE_DIR}
         lib/redisclient/src
         ${CMAKE_BINARY_DIR}
-	${CMAKE_SOURCE_DIR}/include
-	${OPENSSL_INCLUDE_DIR} 
+	      ${CMAKE_SOURCE_DIR}/include
+	      ${OPENSSL_INCLUDE_DIR}
         ${json_SOURCE_DIR}
 )
 
@@ -55,6 +56,8 @@ TARGET_LINK_LIBRARIES(
         discordpp-websocket-websocketpp
         redisclient
 )
+
+#TARGET_LINK_LIBRARIES(${PROJECT_NAME} libcurlpp.a)
 
 foreach(FILE time.py)
     if(EXISTS ${FILE})
