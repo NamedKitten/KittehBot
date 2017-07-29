@@ -1,8 +1,6 @@
 #!/bin/bash
 echo `whoami`
 echo `nproc`
-#apt install libboost-all-dev libcurlpp-dev libwebsocketpp-dev libssl-dev openssl -y
-#apt install python3-pip -y && pip3 install requests
 rm lib/* -rf
 echo "doing teh git"
 git submodule update --init --recursive --remote --force
@@ -19,7 +17,8 @@ cd build
 if [ -f CMakeCache.txt ]; then
     rm * -rf
 fi
-export CC=clang-5.0 CXX=clang++-5.0
+export CC=clang-5.0
+export CXX=clang++-5.0
 echo "using teh cmake"
 cmake ..
 echo "using make"
