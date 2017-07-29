@@ -19,15 +19,15 @@ pipeline {
     post {
         success {
         sh 'python3 jenkins.py success $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
+	cleanWs notFailBuild: true
         }
         failure {
         sh 'python3 jenkins.py failure $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
+	cleanWs notFailBuild: true
         }
         unstable {
         sh 'python3 jenkins.py unstable $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
-        }
-        always {
-        cleanWs notFailBuild: true
+	cleanWs notFailBuild: true
         }
     }
 }
