@@ -1,6 +1,7 @@
 #!/bin/bash
 echo `whoami`
 apt install libboost-all-dev libcurlpp-dev libwebsocketpp-dev libssl-dev openssl -y
+apt install python3-pip -y && pip3 install requests
 git submodule foreach git clean -f -d
 rm lib/* -rf
 echo "doing teh git"
