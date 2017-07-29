@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <vector>
 #include <boost/asio.hpp>
-#include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/timer.hpp>
 #include <redisclient/redissyncclient.h>

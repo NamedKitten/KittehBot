@@ -1,6 +1,7 @@
 #!/bin/bash
 echo `whoami`
 apt install libboost-all-dev libcurlpp-dev libwebsocketpp-dev -y
+rm lib/* -rf
 echo "doing teh git"
 git submodule update --init --recursive --remote --force
 echo "making teh build"
