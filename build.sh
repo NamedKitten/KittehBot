@@ -26,6 +26,7 @@ echo "using make"
 make clean
 if make -j`nproc` ; then
 	redis-server &
+	sleep 5
 	./KittehBot++
 else
 	exit 1
