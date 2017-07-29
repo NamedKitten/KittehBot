@@ -19,12 +19,13 @@ if [ -f CMakeCache.txt ]; then
 fi
 export CC=clang-5.0
 export CXX=clang++-5.0
+export PREFIX="nya++|"
 echo "using teh cmake"
-cmake ..
+cmake .. -DTEST=yes
 echo "using make"
 make clean
 if make -j`nproc` ; then
-	echo "o.o it is done o.o"
+	./KittehBot++
 else
 	exit 1
 fi

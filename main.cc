@@ -61,10 +61,19 @@ int main(int argc, char *argv[]) {
     redis.command("SET", {"isSetup", "true"});
   }
 
-  std::cout << "Starting bot...\n\n";
+  if (std::getenv("TOKEN") != NULL) {
+    std::cout << "Using ENV token." << "\n";
+    redis.command("SET", {"token", getenv("TOKEN")});
+  }
+
+ if (std::getenv("PREFIX") != NULL) {
+    std::cout << "Using ENV prefix." << "\n";
+    redis.command("SET", {"prefix", getenv("PREFIX")});
+  }
+
+  std::cout << "Starting bot..." << "\n";
   std::string token;
   token = redis.command("GET", {"token"}).toString();
-  std::cout << token << '\n';
   std::string prefix = redis.command("GET", {"prefix"}).toString();
 
   aios_ptr aios = std::make_shared<asio::io_service>();
@@ -105,6 +114,13 @@ int main(int argc, char *argv[]) {
         }
         return std::vector<json>();
       });
+
+  bot.addHandler(
+      "READY", [](discordpp::Bot *bot, json jmessage) {
+  if (TEST == "yes") {
+    exit(0);
+  }
+});
 
   aios->run();
 }

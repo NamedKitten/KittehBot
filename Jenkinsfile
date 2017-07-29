@@ -7,6 +7,7 @@ pipeline {
     }
     environment {
         WEBHOOK_URL = credentials('WEBHOOK_URL')
+	TOKEN = credentials('TOKEN')
     }
     stages {
         stage('Test') {
