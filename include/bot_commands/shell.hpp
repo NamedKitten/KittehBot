@@ -1,9 +1,3 @@
-#include <bot_utils/bothelper.hpp>
-#include <bot_utils/shell.hpp>
-#include <discordpp/bot.hh>
-#include <string>
-using json = nlohmann::json;
-
 void shell_command(std::string message, std::string sid, std::string uid,
                    discordpp::Bot *bot) {
   json application = get_application(bot);

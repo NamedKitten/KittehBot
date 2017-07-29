@@ -1,30 +1,30 @@
 #include "sysconf.h"
+#include <string>
 #include <stdlib.h>
+#include <vector>
 #include <boost/asio.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/timer.hpp>
-#include <vector>
-namespace asio = boost::asio;
+#include <redisclient/redissyncclient.h>
 #include <boost/asio/io_service.hpp>
-#include <boost/asio/ip/address.hpp>
+//#include <boost/asio/ip/address.hpp>
+namespace asio = boost::asio;
+using boost::system::error_code;
+using aios_ptr = std::shared_ptr<asio::io_service>;
+#include <discordpp/bot.hh>
+#include <discordpp/rest-curlpp.hh>
+#include <discordpp/websocket-websocketpp.hh>
+using nlohmann::json;
+#include <bot_utils/chat.hpp>
+#include <bot_utils/shell.hpp>
+#include <bot_utils/bothelper.hpp>
 #include <bot_commands/fox.hpp>
 #include <bot_commands/ping.hpp>
 #include <bot_commands/shell.hpp>
 #include <bot_commands/test.hpp>
 #include <bot_commands/userinfo.hpp>
 #include <bot_commands/version.hpp>
-#include <bot_utils/chat.hpp>
-#include <bot_utils/shell.hpp>
-#include <discordpp/bot.hh>
-#include <discordpp/rest-curlpp.hh>
-#include <discordpp/websocket-websocketpp.hh>
-#include <redisclient/redissyncclient.h>
-#include <string>
-
-using json = nlohmann::json;
-using boost::system::error_code;
-using aios_ptr = std::shared_ptr<asio::io_service>;
 
 int main(int argc, char *argv[]) {
   bool needReset = false;
@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
           } else if (!m.find(p + "ping")) {
             ping_command(sid, cid, bot);
           } else if (!m.find(p + "userinfo")) {
-            userinfo_command(sid, uid, jmessage, bot);
+            userinfo_command(jmessage, bot);
           } else if (!m.find(p + "shell")) {
             shell_command(message, sid, uid, bot);
           }

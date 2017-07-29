@@ -1,7 +1,3 @@
-#include <string>
-#include <discordpp/bot.hh>
-#include <bot_utils/chat.hpp>
-
 void test_command(std::string sid, discordpp::Bot *bot) {
   Embed em;
   em.set_description("this supports [named links](https://discordapp.com) on top of the previously shown subset of markdown. ```\nyes, even code blocks```");

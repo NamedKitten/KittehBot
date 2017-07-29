@@ -1,8 +1,3 @@
-#include <bot_utils/bothelper.hpp>
-#include <discordpp/bot.hh>
-#include <string>
-using json = nlohmann::json;
-
 void version_command(json jmessage, discordpp::Bot *bot) {
   json application = get_application(bot);
   std::string username = application["name"].get<std::string>();

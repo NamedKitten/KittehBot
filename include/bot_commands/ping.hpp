@@ -1,8 +1,3 @@
-#include <bot_utils/bothelper.hpp>
-#include <discordpp/bot.hh>
-#include <string>
-using json = nlohmann::json;
-
 void ping_command(std::string sid, std::string cid, discordpp::Bot *bot) {
   std::chrono::steady_clock::time_point begin =
       std::chrono::steady_clock::now();

@@ -1,27 +1,23 @@
-#include <bot_utils/chat.hpp>
-#include <bot_utils/shell.hpp>
-#include <discordpp/bot.hh>
-#include <nlohmann/json.hpp>
-#include <string>
-using json = nlohmann::json;
-
-void userinfo_command(std::string sid, std::string uid, json jmessage,
+void userinfo_command(json jmessage,
                       discordpp::Bot *bot) {
+  std::string user_id = jmessage["author"]["id"].get<std::string>();
+  std::string channel_id = jmessage["channel_id"].get<std::string>();
+  json wait_message = send_message(bot, channel_id, {{"content", "Please wait..."}});
   if (jmessage["mentions"].size() > 0) {
     jmessage["author"] = jmessage["mentions"][0];
-    uid = jmessage["author"]["id"];
+    user_id = jmessage["author"]["id"];
   }
 
-  std::string gid = get_channel(bot, sid)["guild_id"].get<std::string>();
+  std::string gid = get_channel(bot, channel_id)["guild_id"].get<std::string>();
   Embed em;
     std::string username = jmessage["author"]["username"].get<std::string>();
   std::string avatar = jmessage["author"]["avatar"].get<std::string>();
   std::string full_name = username + "#" +
                    jmessage["author"]["discriminator"].get<std::string>();
   std::string avatar_small =
-      "https://cdn.discordapp.com/avatars/" + uid + "/" + avatar + ".png?size=256";
+      "https://cdn.discordapp.com/avatars/" + user_id + "/" + avatar + ".png?size=256";
   std::string avatar_large =
-      "https://cdn.discordapp.com/avatars/" + uid + "/" + avatar + ".png?size=1024";
+      "https://cdn.discordapp.com/avatars/" + user_id + "/" + avatar + ".png?size=1024";
   em.set_thumbnail(avatar_small);
   em.set_author(full_name, "", avatar_small);
 
@@ -29,7 +25,7 @@ void userinfo_command(std::string sid, std::string uid, json jmessage,
   for (json guild : bot->guilds_) {
     if (guild["id"].get<std::string>() == gid) {
       for (json pres : guild["presences"]) {
-        if (pres["user"]["id"].get<std::string>() == uid) {
+        if (pres["user"]["id"].get<std::string>() == user_id) {
           pre = pres;
           break;
         }
@@ -58,14 +54,14 @@ void userinfo_command(std::string sid, std::string uid, json jmessage,
     game = "None";
   }
   em.set_description(bold("Display name") + ": " + username + "\n" + bold("ID") +
-                     ": " + uid + "\n" + emlink("Avatar", avatar_large) + "\n" +
+                     ": " + user_id + "\n" + emlink("Avatar", avatar_large) + "\n" +
                      bold("Status") + ": " + stata + "\n" + bold("Game") +
                      ": " + game);
-  json mem = get_member(bot, gid, uid);
+  json mem = get_member(bot, gid, user_id);
   em.add_field("Join dates",
                bold("This server") + ": " +
                    shell("./time.py " + mem["joined_at"].get<std::string>()) +
-                   bold("Discord") + ": " + shell("./time.py " + uid),
+                   bold("Discord") + ": " + shell("./time.py " + user_id),
                true);
-  send_message(bot, sid, {{"embed", em.data}});
+  edit_message(bot, channel_id, wait_message["id"].get<std::string>(), {{"embed", em.data}, {"content", nullptr}});
 }
