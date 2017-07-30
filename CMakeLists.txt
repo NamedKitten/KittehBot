@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.6)
 
 project(KittehBot++)
 set(CMAKE_CXX_STANDARD 14)
-SET(VERSION "1.3.1")
+SET(VERSION "1.3.2")
 set(TEST "${TEST}")
 #set(CMAKE_EXE_LINKER_FLAGS    "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
 #set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_SHARED_LINKER_FLAGS}")

@@ -33,7 +33,7 @@ branch_name = os.environ.get("BRANCH_NAME")
 
 embed["title"] = "[cpp-bot:{}] Build {}".format(branch_name, build_number)
 
-embed["url"] = "https://github.com/{}/cpp-bot/commit/{}".format(author, args[2])
+embed["url"] = "https://jenkins-pandentia.qcx.io/view/all/job/NamedKitten/job/cpp-bot/job/{}/{}/console".format(branch_name, build_number)
 
 json = {
     "username": "Jenkins",

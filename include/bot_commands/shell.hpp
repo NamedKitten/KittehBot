@@ -6,10 +6,10 @@ void shell_command(std::string message, std::string sid, std::string uid,
     std::string command = message.substr(6, message.length());
 
     json ret = send_message(
-        bot, sid, {{"content", "```shell\n" + shell(command) + "\n```"}});
-
+        bot, sid, {{"content", shell(command)}});
+        std::cout << ret.dump(4) << '\n';
   } else {
-    send_message(
+   send_message(
         bot, sid,
         {{"content", "Only the bots owner (" +
                          application["owner"]["username"].get<std::string>() +

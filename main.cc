@@ -4,6 +4,7 @@
 #include <vector>
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/predicate.hpp>
 #include <boost/timer.hpp>
 #include <redisclient/redissyncclient.h>
 #include <boost/asio/io_service.hpp>
@@ -95,11 +96,11 @@ int main(int argc, char *argv[]) {
           if (!m.find(p + "version")) {
             version_command(jmessage, bot);
           } else if (!m.find(p + "test")) {
-            test_command(sid, bot);
+            test_command(jmessage, bot);
           } else if (!m.find(p + "fox")) {
             fox_command(jmessage, bot);
           } else if (!m.find(p + "ping")) {
-            ping_command(sid, cid, bot);
+            ping_command(jmessage, bot);
           } else if (!m.find(p + "userinfo")) {
             userinfo_command(jmessage, bot);
           } else if (!m.find(p + "shell")) {

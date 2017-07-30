@@ -7,7 +7,8 @@ pipeline {
     }
     environment {
         WEBHOOK_URL = credentials('WEBHOOK_URL')
-	TOKEN = credentials('TOKEN')
+	      TOKEN = credentials('TOKEN')
+        PREFIX = "nya++|"
     }
     stages {
         stage('Test') {

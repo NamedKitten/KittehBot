@@ -4,5 +4,5 @@ void version_command(json jmessage, discordpp::Bot *bot) {
   std::string channel_id = jmessage["channel_id"].get<std::string>();
   send_message(bot, channel_id, {{"content", "`" + username + "` version `" +
                                             BOT_VERSION "` compiled with `" +
-                                            __VERSION__ + "`."}});
+                                            __VERSION__ + "` running on `" + shell("uname -a") + "`."}});
 }

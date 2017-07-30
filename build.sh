@@ -19,7 +19,6 @@ if [ -f CMakeCache.txt ]; then
 fi
 export CC=clang-5.0
 export CXX=clang++-5.0
-export PREFIX="nya++|"
 echo "using teh cmake"
 cmake .. -DTEST=yes
 echo "using make"

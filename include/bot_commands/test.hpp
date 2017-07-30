@@ -1,4 +1,5 @@
-void test_command(std::string sid, discordpp::Bot *bot) {
+void test_command(json jmessage, discordpp::Bot *bot) {
+  std::string channel_id = jmessage["channel_id"].get<std::string>();
   Embed em;
   em.set_description("this supports [named links](https://discordapp.com) on top of the previously shown subset of markdown. ```\nyes, even code blocks```");
   em.add_field(":thinking:", "some of these properties have certain limits...");
@@ -14,7 +15,7 @@ void test_command(std::string sid, discordpp::Bot *bot) {
   em.set_thumbnail("https://cdn.discordapp.com/embed/avatars/0.png");
   em.set_image("https://cdn.discordapp.com/embed/avatars/0.png");
   em.set_author("author name", "https://discordapp.com", "https://cdn.discordapp.com/embed/avatars/0.png");
-  bot->call("/channels/" + sid + "/messages",
+  bot->call("/channels/" + channel_id + "/messages",
             {{"embed", em.data}},
             "POST");
 }
