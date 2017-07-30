@@ -3,7 +3,7 @@ echo `whoami`
 echo `nproc`
 rm lib/* -rf
 echo "doing teh git"
-git submodule update --init --recursive --remote --force
+git submodule update --init --recursive --remote --force --depth 1
 echo "making teh build"
 mkdir build
 echo "going into build"
