@@ -14,7 +14,7 @@ add_subdirectory(lib/rest-curlpp)
 add_subdirectory(lib/websocket-websocketpp)
 
 add_subdirectory(lib/redisclient)
-set_target_properties(parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
+set_target_properties(benchmark parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
 find_package(Boost REQUIRED system timer)
 
@@ -24,7 +24,7 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sys
 
 
 # -ggdb -g3
-set(CFLAGS "${CFLAGS}")
+set(CFLAGS "${CFLAGS} -O3")
 set(CXX_FLAGS "${CFLAGS}")
 
 INCLUDE_DIRECTORIES(

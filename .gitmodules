@@ -1,6 +1,6 @@
 [submodule "lib/discordpp"]
 	path = lib/discordpp
-	url = https://github.com/DiscordPP/discordpp.git
+	url = https://github.com/namedkitten/discordpp.git
 [submodule "lib/websocket-websocketpp"]
 	path = lib/websocket-websocketpp
 	url = https://github.com/DiscordPP/websocket-websocketpp.git

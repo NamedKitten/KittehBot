@@ -24,7 +24,9 @@ using nlohmann::json;
 #include <bot_commands/shell.hpp>
 #include <bot_commands/test.hpp>
 #include <bot_commands/userinfo.hpp>
+#include <bot_commands/serverinfo.hpp>
 #include <bot_commands/version.hpp>
+#include <bot_commands/set.hpp>
 
 int main(int argc, char *argv[]) {
   bool needReset = false;
@@ -74,19 +76,19 @@ int main(int argc, char *argv[]) {
   std::cout << "Starting bot..." << "\n";
   std::string token;
   token = "Bot " + redis.command("GET", {"token"}).toString();
-  std::string prefix = redis.command("GET", {"prefix"}).toString();
 
   aios_ptr aios = std::make_shared<asio::io_service>();
   discordpp::Bot bot(
       aios, token, std::make_shared<discordpp::RestCurlPPModule>(aios, token),
       std::make_shared<discordpp::WebsocketWebsocketPPModule>(aios, token));
   bot.addHandler(
-      "MESSAGE_CREATE", [&redis, prefix](discordpp::Bot *bot, json jmessage) {
+      "MESSAGE_CREATE", [&redis](discordpp::Bot *bot, json jmessage) {
+        std::string prefix = redis.command("GET", {"prefix"}).toString();
         std::string p = prefix;
         std::string m = jmessage["content"].get<std::string>();
         std::string cid = jmessage["channel_id"].get<std::string>();
         std::string uid = jmessage["author"]["id"].get<std::string>();
-        if (m.compare(0, p.length(), p) == 0) {
+        if (!m.find(p)) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = jmessage["content"].get<std::string>();
@@ -103,8 +105,12 @@ int main(int argc, char *argv[]) {
             ping_command(jmessage, bot);
           } else if (!m.find(p + "userinfo")) {
             userinfo_command(jmessage, bot);
+          } else if (!m.find(p + "serverinfo")) {
+            serverinfo_command(jmessage, bot);
           } else if (!m.find(p + "shell")) {
             shell_command(message, sid, uid, bot);
+          } else if (!m.find(p + "set ")) {
+            set_command(jmessage, message, redis, bot);
           }
           std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
           int elapsed =

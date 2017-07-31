@@ -60,7 +60,7 @@ void set_json(json stuff)
   json footer = {{"text", text}, {"icon_url", icon_url}};
   data["footer"] = footer;
  }
- void add_field(std::string name, std::string value, bool display_inline = false)
+ void add_field(std::string name, std::string value, bool display_inline = true)
  {
   json field = {{"name", name}, {"value", value}, {"inline", display_inline}};
   data["fields"].push_back(field);
