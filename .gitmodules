@@ -10,3 +10,6 @@
 [submodule "lib/redisclient"]
 	path = lib/redisclient
 	url = https://github.com/nekipelov/redisclient.git
+[submodule "lib/docopt"]
+	path = lib/docopt
+	url = https://github.com/docopt/docopt.cpp
