@@ -10,7 +10,7 @@ add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 add_subdirectory(lib/discordpp)
 add_subdirectory(lib/rest-curlpp)
 add_subdirectory(lib/websocket-websocketpp)
-add_subdirectory(lib/docopt)
+#add_subdirectory(lib/docopt)
 add_subdirectory(lib/redisclient)
 set_target_properties(benchmark parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
@@ -34,18 +34,17 @@ INCLUDE_DIRECTORIES(
 	      ${CMAKE_SOURCE_DIR}/include
 	      ${OPENSSL_INCLUDE_DIR}
         ${json_SOURCE_DIR}
-        ${DOCOPT_INCLUDE_DIRS}
+        #${DOCOPT_INCLUDE_DIRS}
 )
 
 TARGET_LINK_LIBRARIES(
         ${PROJECT_NAME}
         ${Boost_LIBRARIES}
-        libcurlpp.a
         discordpp
         discordpp-rest-curlpp
         discordpp-websocket-websocketpp
         redisclient
-        docopt
+        #docopt
 )
 
 

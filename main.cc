@@ -62,8 +62,8 @@ int main(int argc, const char** argv) {
     exit(1);
   }
 
-  if ((redis.command("GET", {"isSetup"}).toString() ==
-       "false") or needReset) {
+  if (redis.command("GET", {"isSetup"}).toString() ==
+       "false") {
     std::cout << "Welcome to the setup.\n";
     std::cout << "Please enter your token. ";
     std::string tokens;
@@ -95,13 +95,14 @@ int main(int argc, const char** argv) {
             << "\n";
   std::string token;
   token = "Bot " + redis.command("GET", {"token"}).toString();
-
+  std::cout << "a" << '\n';
   aios_ptr aios = std::make_shared<asio::io_service>();
   discordpp::Bot bot(
       aios, token, std::make_shared<discordpp::RestCurlPPModule>(aios, token),
       std::make_shared<discordpp::WebsocketWebsocketPPModule>(aios, token));
+    std::cout << "b" << '\n';
   bot.addHandler(
-      "MESSAGE_CREATE", [&redis](discordpp::Bot *bot, json jmessage) {
+      "MESSAGE_CREATE", [&redis](discordpp::Bot* bot, json jmessage) {
         std::string prefix = redis.command("GET", {"prefix"}).toString();
         std::string p = prefix;
         std::string m = jmessage["content"].get<std::string>();
@@ -140,7 +141,7 @@ int main(int argc, const char** argv) {
         return std::vector<json>();
       });
 
-  bot.addHandler("READY", [](discordpp::Bot *bot, json jmessage) {
+  bot.addHandler("READY", [](discordpp::Bot* bot, json jmessage) {
     if (TEST == "yes") {
       exit(0);
     }
