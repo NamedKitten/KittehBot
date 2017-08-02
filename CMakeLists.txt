@@ -21,7 +21,7 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sys
 
 
 # -ggdb -g3
-set(CFLAGS "${CFLAGS} -ggdb -g3")
+set(CFLAGS "${CFLAGS} -ggdb -g3 -O2")
 set(CXX_FLAGS "${CFLAGS}")
 
 INCLUDE_DIRECTORIES(

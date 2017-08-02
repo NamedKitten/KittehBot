@@ -19,11 +19,12 @@ if [ -f CMakeCache.txt ]; then
 fi
 export CC=clang-5.0
 export CXX=clang++-5.0
+export VERBOSE=1
 echo "using teh cmake"
 cmake .. -DTEST=yes
 echo "using make"
 make clean
-if make -j`nproc` ; then
+if make -j`nproc` VERBOSE=1 ; then
 	redis-server &
 	sleep 5
 	./KittehBot++

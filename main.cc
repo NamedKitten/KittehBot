@@ -27,6 +27,7 @@ using nlohmann::json;
 #include <bot_commands/serverinfo.hpp>
 #include <bot_commands/version.hpp>
 #include <bot_commands/set.hpp>
+/*
 #include "docopt.h"
 
 static const char USAGE[] =
@@ -34,18 +35,18 @@ static const char USAGE[] =
 
 -h --help        show this
 --reset          reset settings
-)";
+)";*/
 
 int main(int argc, const char** argv) {
   bool needReset = false;
 
-  std::map<std::string, docopt::value> args =
+  /*std::map<std::string, docopt::value> args =
       docopt::docopt(USAGE, {argv + 1, argv + argc}, true, "KittehBot++");
   for (auto const& arg : args) {
     if (arg.first == "--reset" && arg.second.asBool()) {
       needReset = true;
     }
-  }
+  }*/
 
   std::cout << "Welcome." << '\n';
   boost::asio::ip::address address =
@@ -62,7 +63,7 @@ int main(int argc, const char** argv) {
   }
 
   if ((redis.command("GET", {"isSetup"}).toString() ==
-       "false") /* or needReset*/) {
+       "false") or needReset) {
     std::cout << "Welcome to the setup.\n";
     std::cout << "Please enter your token. ";
     std::string tokens;

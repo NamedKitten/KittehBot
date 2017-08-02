@@ -11,8 +11,6 @@ void shell_command(std::string message, std::string sid, std::string uid,
   } else {
    send_message(
         bot, sid,
-        {{"content", "Only the bots owner (" +
-                         application["owner"]["username"].get<std::string>() +
-                         ") can use this command."}});
+         {{"content", "Only the bots owner (" + application["owner"]["username"].get<std::string>() + ") can use this command."}});
   }
 }
