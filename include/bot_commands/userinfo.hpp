@@ -16,7 +16,9 @@ void userinfo_command(json jmessage,
   json mem = msg;
 
   Embed em;
-
+  std::cout << "ab" << '\n';
+  int user_id_int = atoi(jmessage["author"]["id"].get<std::string>().c_str());
+std::cout << "abc" << '\n';
     std::string username = jmessage["author"]["username"].get<std::string>();
   std::string avatar = jmessage["author"]["avatar"].get<std::string>();
   std::string full_name = username + "#" +
@@ -56,8 +58,8 @@ void userinfo_command(json jmessage,
                      ": " + game);
   em.add_field("Join dates",
                "**This server**: " +
-                   shell("./time.py " + mem["joined_at"].get<std::string>()) +
-                   "**Discord**: " + shell("./time.py " + user_id),
+                   time_diff(timestamp_to_unix(mem["joined_at"].get<std::string>())) +
+                   "\n**Discord**: " + time_diff(((user_id_int >> 22) + 1420070400000) / 1000),
                true);
   if (mem["roles"].size() > 0) {
   std::stringstream roles_ss;

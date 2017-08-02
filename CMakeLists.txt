@@ -14,14 +14,14 @@ add_subdirectory(lib/websocket-websocketpp)
 add_subdirectory(lib/redisclient)
 set_target_properties(benchmark parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
-find_package(Boost REQUIRED system timer)
+find_package(Boost REQUIRED system timer date_time)
 
 message(STATUS "${PROJECT_NAME} version: ${VERSION_FULL}")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sysconf.h)
 
 
 # -ggdb -g3
-set(CFLAGS "${CFLAGS} -ggdb -g3 -O2")
+set(CFLAGS "${CFLAGS} -ggdb -g3")
 set(CXX_FLAGS "${CFLAGS}")
 
 INCLUDE_DIRECTORIES(
@@ -46,6 +46,3 @@ TARGET_LINK_LIBRARIES(
         redisclient
         #docopt
 )
-
-
-configure_file(time.py time.py COPYONLY)

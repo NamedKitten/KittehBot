@@ -1,7 +1,53 @@
 #pragma once
-#include <string>
-#include <discordpp/bot.hh>
-using json = nlohmann::json;
+
+std::string time_diff(time_t times) {
+  std::string a = "";
+  time_t t;
+  t = time(nullptr) - times;
+
+  time_t years = t / 31536000;
+
+  time_t days = (t / 86400) % 365;
+  time_t hours = (t / 3600) % 24;
+  time_t minutes = (t / 60) % 60;
+  time_t seconds = (t) % 60;
+
+  if (!years && !days && !hours && !minutes)
+    return std::to_string(seconds) + " " +
+           (seconds != 1 ? "seconds" : "second") + " ago";
+  else {
+    bool need_comma = false;
+    if (years) {
+      a = std::to_string(years) + " " + (years != 1 ? "years" : "year");
+      need_comma = true;
+    }
+    if (days) {
+      a += need_comma ? ", " : "";
+      a += std::to_string(days) + " " + (days != 1 ? "days" : "day");
+      need_comma = true;
+    }
+    if (hours) {
+      a += need_comma ? ", " : "";
+      a += std::to_string(hours) + " " + (hours != 1 ? "hours" : "hour");
+      need_comma = true;
+    }
+    if (minutes) {
+      a += need_comma ? ", " : "";
+      a += std::to_string(minutes) + " " + (minutes != 1 ? "minutes" : "minute");
+    }
+    return a + " ago";
+  }
+}
+
+// 2017-07-29T19:59:00.136000+00:00
+
+time_t timestamp_to_unix(std::string timestamp) {
+  timestamp.erase(timestamp.length()-13);
+
+  struct tm t;
+  strptime(timestamp.c_str(), "%FT%T", &t);
+  return mktime(&t);
+}
 
 json send_message(discordpp::Bot *bot, std::string channel_id, json j) {
   bool marker = false;

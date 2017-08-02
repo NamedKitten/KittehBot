@@ -2,9 +2,11 @@
 #include <string>
 #include <stdlib.h>
 #include <vector>
+#include <ctime>
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/timer.hpp>
 #include <redisclient/redissyncclient.h>
 #include <boost/asio/io_service.hpp>
