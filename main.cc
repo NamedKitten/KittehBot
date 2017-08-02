@@ -1,13 +1,13 @@
-#include "sysconf.h"
-#include <string>
-#include <stdlib.h>
-#include <vector>
-#include <boost/asio.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/timer.hpp>
 #include <redisclient/redissyncclient.h>
+#include <stdlib.h>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/asio.hpp>
 #include <boost/asio/io_service.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/timer.hpp>
+#include <string>
+#include <vector>
+#include "sysconf.h"
 //#include <boost/asio/ip/address.hpp>
 namespace asio = boost::asio;
 using boost::system::error_code;
@@ -16,23 +16,37 @@ using aios_ptr = std::shared_ptr<asio::io_service>;
 #include <discordpp/rest-curlpp.hh>
 #include <discordpp/websocket-websocketpp.hh>
 using nlohmann::json;
-#include <bot_utils/chat.hpp>
-#include <bot_utils/shell.hpp>
-#include <bot_utils/bothelper.hpp>
 #include <bot_commands/fox.hpp>
 #include <bot_commands/ping.hpp>
+#include <bot_commands/serverinfo.hpp>
+#include <bot_commands/set.hpp>
 #include <bot_commands/shell.hpp>
 #include <bot_commands/test.hpp>
 #include <bot_commands/userinfo.hpp>
-#include <bot_commands/serverinfo.hpp>
 #include <bot_commands/version.hpp>
-#include <bot_commands/set.hpp>
+#include <bot_utils/bothelper.hpp>
+#include <bot_utils/chat.hpp>
+#include <bot_utils/shell.hpp>
+#include "docopt.h"
 
-int main(int argc, char *argv[]) {
+static const char USAGE[] =
+    R"(Usage: KittehBot++ [--reset]
+
+-h --help        show this
+--reset          reset settings
+)";
+
+int main(int argc, const char **argv) {
   bool needReset = false;
-  if (argc > 1) {
-    needReset = true;
+
+  std::map<std::string, docopt::value> args =
+      docopt::docopt(USAGE, {argv + 1, argv + argc}, true, "KittehBot++");
+  for (auto const &arg : args) {
+    if (arg.first == "--reset" && arg.second.asBool()) {
+      needReset = true;
+    }
   }
+
   std::cout << "Welcome." << '\n';
   boost::asio::ip::address address =
       boost::asio::ip::address::from_string("127.0.0.1");
@@ -47,7 +61,8 @@ int main(int argc, char *argv[]) {
     exit(1);
   }
 
-  if ((redis.command("GET", {"isSetup"}).toString() == "false") or needReset) {
+  if ((redis.command("GET", {"isSetup"}).toString() ==
+       "false") /* or needReset*/) {
     std::cout << "Welcome to the setup.\n";
     std::cout << "Please enter your token. ";
     std::string tokens;
@@ -64,16 +79,19 @@ int main(int argc, char *argv[]) {
   }
 
   if (std::getenv("TOKEN") != NULL) {
-    std::cout << "Using ENV token." << "\n";
+    std::cout << "Using ENV token."
+              << "\n";
     redis.command("SET", {"token", getenv("TOKEN")});
   }
 
- if (std::getenv("PREFIX") != NULL) {
-    std::cout << "Using ENV prefix." << "\n";
+  if (std::getenv("PREFIX") != NULL) {
+    std::cout << "Using ENV prefix."
+              << "\n";
     redis.command("SET", {"prefix", getenv("PREFIX")});
   }
 
-  std::cout << "Starting bot..." << "\n";
+  std::cout << "Starting bot..."
+            << "\n";
   std::string token;
   token = "Bot " + redis.command("GET", {"token"}).toString();
 
@@ -112,7 +130,8 @@ int main(int argc, char *argv[]) {
           } else if (!m.find(p + "set ")) {
             set_command(jmessage, message, redis, bot);
           }
-          std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+          std::chrono::steady_clock::time_point end =
+              std::chrono::steady_clock::now();
           int elapsed =
               std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
                   .count();
@@ -121,12 +140,11 @@ int main(int argc, char *argv[]) {
         return std::vector<json>();
       });
 
-  bot.addHandler(
-      "READY", [](discordpp::Bot *bot, json jmessage) {
-  if (TEST == "yes") {
-    exit(0);
-  }
-});
+  bot.addHandler("READY", [](discordpp::Bot *bot, json jmessage) {
+    if (TEST == "yes") {
+      exit(0);
+    }
+  });
 
   aios->run();
 }

@@ -4,13 +4,8 @@ void serverinfo_command(json jmessage,
   bot->call("/channels/" + channel_id, {}, "GET", [channel_id, jmessage](discordpp::Bot *bot, json msg) {
   std::string gid = msg["guild_id"].get<std::string>();
   Embed em;
-  json guild_json = {{}};
-  for (json guild : bot->guilds_) {
-    if (guild["id"].get<std::string>() == gid) {
-      guild_json = guild;
-    }
-  }
-  //json guild_json = bot->guilds_[gid];
+
+  json guild_json = bot->guilds_[gid];
   int verification_level_int = guild_json["verification_level"];
   std::string verification_level = "";
   if (verification_level_int  == 0) {

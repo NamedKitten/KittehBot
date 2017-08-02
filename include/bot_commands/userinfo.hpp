@@ -28,18 +28,7 @@ void userinfo_command(json jmessage,
   em.set_thumbnail(avatar_small);
   em.set_author(full_name, "", avatar_small);
 
-  json pre = {{"status", "offline"}, {"game", nullptr}};
-  for (json guild : bot->guilds_) {
-    if (guild["id"].get<std::string>() == gid) {
-      for (json pres : guild["presences"]) {
-        if (pres["user"]["id"].get<std::string>() == user_id) {
-          pre = pres;
-          break;
-        }
-      }
-    }
-  }
-  //json pre = bot->presences_[user_id];
+  json pre = bot->presences_[user_id];
 
   std::string stata = pre["status"].get<std::string>();
   if (stata == "dnd") {
