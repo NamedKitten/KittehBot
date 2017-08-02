@@ -1,13 +1,13 @@
-#include <redisclient/redissyncclient.h>
-#include <stdlib.h>
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/asio.hpp>
-#include <boost/asio/io_service.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/timer.hpp>
-#include <string>
-#include <vector>
 #include "sysconf.h"
+#include <string>
+#include <stdlib.h>
+#include <vector>
+#include <boost/asio.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/algorithm/string/predicate.hpp>
+#include <boost/timer.hpp>
+#include <redisclient/redissyncclient.h>
+#include <boost/asio/io_service.hpp>
 //#include <boost/asio/ip/address.hpp>
 namespace asio = boost::asio;
 using boost::system::error_code;
@@ -16,17 +16,17 @@ using aios_ptr = std::shared_ptr<asio::io_service>;
 #include <discordpp/rest-curlpp.hh>
 #include <discordpp/websocket-websocketpp.hh>
 using nlohmann::json;
+#include <bot_utils/chat.hpp>
+#include <bot_utils/shell.hpp>
+#include <bot_utils/bothelper.hpp>
 #include <bot_commands/fox.hpp>
 #include <bot_commands/ping.hpp>
-#include <bot_commands/serverinfo.hpp>
-#include <bot_commands/set.hpp>
 #include <bot_commands/shell.hpp>
 #include <bot_commands/test.hpp>
 #include <bot_commands/userinfo.hpp>
+#include <bot_commands/serverinfo.hpp>
 #include <bot_commands/version.hpp>
-#include <bot_utils/bothelper.hpp>
-#include <bot_utils/chat.hpp>
-#include <bot_utils/shell.hpp>
+#include <bot_commands/set.hpp>
 #include "docopt.h"
 
 static const char USAGE[] =
@@ -36,12 +36,12 @@ static const char USAGE[] =
 --reset          reset settings
 )";
 
-int main(int argc, const char **argv) {
+int main(int argc, const char** argv) {
   bool needReset = false;
 
   std::map<std::string, docopt::value> args =
       docopt::docopt(USAGE, {argv + 1, argv + argc}, true, "KittehBot++");
-  for (auto const &arg : args) {
+  for (auto const& arg : args) {
     if (arg.first == "--reset" && arg.second.asBool()) {
       needReset = true;
     }
@@ -130,8 +130,7 @@ int main(int argc, const char **argv) {
           } else if (!m.find(p + "set ")) {
             set_command(jmessage, message, redis, bot);
           }
-          std::chrono::steady_clock::time_point end =
-              std::chrono::steady_clock::now();
+          std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
           int elapsed =
               std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
                   .count();

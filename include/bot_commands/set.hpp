@@ -41,5 +41,6 @@ void set_command(json jmessage, std::string message,
                         ") can use this command."}},
                   "POST");
       }
+    }
     });
 }

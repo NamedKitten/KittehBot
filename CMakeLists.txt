@@ -3,10 +3,7 @@ cmake_minimum_required(VERSION 3.6)
 project(KittehBot++)
 set(CMAKE_CXX_STANDARD 14)
 SET(VERSION "1.3.2")
-set(BUILD_SHARED_LIBS OFF)
 set(TEST "${TEST}")
-set(CMAKE_EXE_LINKER_FLAGS    "-Wl,--as-needed ${CMAKE_EXE_LINKER_FLAGS}")
-set(CMAKE_SHARED_LINKER_FLAGS "-Wl,--as-needed ${CMAKE_SHARED_LINKER_FLAGS}")
 set(SOURCE_FILES main.cc)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
@@ -17,7 +14,6 @@ add_subdirectory(lib/docopt)
 add_subdirectory(lib/redisclient)
 set_target_properties(benchmark parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
-set(Boost_USE_STATIC_LIBS   ON)
 find_package(Boost REQUIRED system timer)
 
 message(STATUS "${PROJECT_NAME} version: ${VERSION_FULL}")
@@ -25,7 +21,7 @@ configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sys
 
 
 # -ggdb -g3
-set(CFLAGS "${CFLAGS} -O3")
+set(CFLAGS "${CFLAGS} -ggdb -g3")
 set(CXX_FLAGS "${CFLAGS}")
 
 INCLUDE_DIRECTORIES(
