@@ -1,16 +1,19 @@
 #pragma once
 
-std::string time_diff(time_t times) {
+std::string time_diff(uint64_t times) {
   std::string a = "";
-  time_t t;
-  t = time(nullptr) - times;
+  uint64_t t;
+  uint64_t current_time = time(nullptr);
+  t = current_time - times;
+  std::cout << times << '\n';
+  std::cout << t << '\n';
+  std::cout << current_time << '\n';
 
-  time_t years = t / 31536000;
-
-  time_t days = (t / 86400) % 365;
-  time_t hours = (t / 3600) % 24;
-  time_t minutes = (t / 60) % 60;
-  time_t seconds = (t) % 60;
+  uint64_t years = t / 31536000;
+  uint64_t days = (t / 86400) % 365;
+  uint64_t hours = (t / 3600) % 24;
+  uint64_t minutes = (t / 60) % 60;
+  uint64_t seconds = (t) % 60;
 
   if (!years && !days && !hours && !minutes)
     return std::to_string(seconds) + " " +
@@ -41,12 +44,22 @@ std::string time_diff(time_t times) {
 
 // 2017-07-29T19:59:00.136000+00:00
 
-time_t timestamp_to_unix(std::string timestamp) {
+uint64_t timestamp_to_unix(std::string timestamp) {
   timestamp.erase(timestamp.length()-13);
-
   struct tm t;
   strptime(timestamp.c_str(), "%FT%T", &t);
-  return mktime(&t);
+  std::cout << timestamp << '\n';
+  uint64_t times = mktime(&t) - 3600;
+  std::cout << times << '\n';
+  return times;
+}
+
+uint64_t snowflake_to_unix(uint64_t snowflake) {
+  std::cout << "Snowflake: " << snowflake << '\n';
+
+  uint64_t unix_time = (((snowflake >> 22) + 1420070400000) / 1000);
+  std::cout << "Unix: " << unix_time << '\n';
+  return unix_time;
 }
 
 json send_message(discordpp::Bot *bot, std::string channel_id, json j) {

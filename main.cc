@@ -14,10 +14,17 @@
 namespace asio = boost::asio;
 using boost::system::error_code;
 using aios_ptr = std::shared_ptr<asio::io_service>;
+#include <curlpp/cURLpp.hpp>
+#include <curlpp/Easy.hpp>
+#include <curlpp/Options.hpp>
+#include <curlpp/Exception.hpp>
 #include <discordpp/bot.hh>
 #include <discordpp/rest-curlpp.hh>
 #include <discordpp/websocket-websocketpp.hh>
 using nlohmann::json;
+#include <conversions.hpp>
+namespace conversions = NamedKitten::conversions;
+
 #include <bot_utils/chat.hpp>
 #include <bot_utils/shell.hpp>
 #include <bot_utils/bothelper.hpp>
@@ -29,6 +36,8 @@ using nlohmann::json;
 #include <bot_commands/serverinfo.hpp>
 #include <bot_commands/version.hpp>
 #include <bot_commands/set.hpp>
+#include <bot_commands/ddg.hpp>
+
 /*
 #include "docopt.h"
 
@@ -133,6 +142,8 @@ int main(int argc, const char** argv) {
             shell_command(message, sid, uid, bot);
           } else if (!m.find(p + "set ")) {
             set_command(jmessage, message, redis, bot);
+          } else if (!m.find(p + "ddg ")) {
+            ddg_command(jmessage, message, bot);
           }
           std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
           int elapsed =

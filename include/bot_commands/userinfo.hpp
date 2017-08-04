@@ -7,17 +7,17 @@ void userinfo_command(json jmessage,
     jmessage["author"] = jmessage["mentions"][0];
     user_id = jmessage["author"]["id"];
   }
-  bot->call("/channels/" + channel_id + "/messages", {{"content", "Please wait..."}}, "POST", [user_id, channel_id, jmessage](discordpp::Bot *bot, json msg) {
-  json wait_message = msg;
-  bot->call("/channels/" + channel_id, {}, "GET", [user_id, channel_id, jmessage, wait_message](discordpp::Bot *bot, json msg) {
+  bot->call("/channels/" + channel_id, {}, "GET", [user_id, channel_id, jmessage](discordpp::Bot *bot, json msg) {
   std::string gid = msg["guild_id"].get<std::string>();
-  bot->call("/guilds/" + gid + "/members/" + user_id, {}, "GET", [user_id, channel_id, jmessage, wait_message, gid](discordpp::Bot *bot, json msg) {
+  bot->call("/guilds/" + gid + "/members/" + user_id, {}, "GET", [user_id, channel_id, jmessage, gid](discordpp::Bot *bot, json msg) {
 
   json mem = msg;
 
+
   Embed em;
   std::cout << "ab" << '\n';
-  int user_id_int = atoi(jmessage["author"]["id"].get<std::string>().c_str());
+  std::string user_id_c_str = jmessage["author"]["id"].get<std::string>();
+  uint64_t user_id_int = std::strtoull(user_id_c_str.c_str(), nullptr, 10);
 std::cout << "abc" << '\n';
     std::string username = jmessage["author"]["username"].get<std::string>();
   std::string avatar = jmessage["author"]["avatar"].get<std::string>();
@@ -58,8 +58,8 @@ std::cout << "abc" << '\n';
                      ": " + game);
   em.add_field("Join dates",
                "**This server**: " +
-                   time_diff(timestamp_to_unix(mem["joined_at"].get<std::string>())) +
-                   "\n**Discord**: " + time_diff(((user_id_int >> 22) + 1420070400000) / 1000),
+                   conversions::time_diff(conversions::timestamp_to_unix(mem["joined_at"].get<std::string>())) +
+                   "\n**Discord**: " + conversions::time_diff(conversions::snowflake_to_unix(user_id_int)),
                true);
   if (mem["roles"].size() > 0) {
   std::stringstream roles_ss;
@@ -73,8 +73,8 @@ std::cout << "abc" << '\n';
   em.add_field("Roles", roles, true);
   }
 
-  bot->call("/channels/" + channel_id + "/messages/" + wait_message["id"].get<std::string>(), {{"embed", em.data}, {"content", nullptr}}, "PATCH");
-});
+  bot->call("/channels/" + channel_id + "/messages", {{"embed", em.data}}, "POST");
+
 });
 });
 }
