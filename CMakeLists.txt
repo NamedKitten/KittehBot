@@ -6,7 +6,7 @@ SET(VERSION "1.3.2")
 set(TEST "${TEST}")
 set(SOURCE_FILES main.cc)
 
-set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/cmake/rapidjson")
 include(cotire)
 
 

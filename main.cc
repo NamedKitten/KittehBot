@@ -6,6 +6,8 @@
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/timer.hpp>
 #include <redisclient/redissyncclient.h>
@@ -28,6 +30,7 @@ namespace conversions = NamedKitten::conversions;
 #include <bot_utils/chat.hpp>
 #include <bot_utils/shell.hpp>
 #include <bot_utils/bothelper.hpp>
+#include <bot_utils/string_utils.hpp>
 #include <bot_commands/fox.hpp>
 #include <bot_commands/ping.hpp>
 #include <bot_commands/shell.hpp>
@@ -37,6 +40,7 @@ namespace conversions = NamedKitten::conversions;
 #include <bot_commands/version.hpp>
 #include <bot_commands/set.hpp>
 #include <bot_commands/ddg.hpp>
+#include <bot_commands/translate.hpp>
 
 /*
 #include "docopt.h"
@@ -125,7 +129,6 @@ int main(int argc, const char** argv) {
           std::string message = jmessage["content"].get<std::string>();
           message = message.substr(p.length(), message.length());
           std::string sid = jmessage["channel_id"].get<std::string>();
-
           if (!m.find(p + "version")) {
             version_command(jmessage, bot);
           } else if (!m.find(p + "test")) {
@@ -144,6 +147,8 @@ int main(int argc, const char** argv) {
             set_command(jmessage, message, redis, bot);
           } else if (!m.find(p + "ddg ")) {
             ddg_command(jmessage, message, bot);
+          } else if (!m.find(p + "translate ")) {
+            translate_command(jmessage, message, bot);
           }
           std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
           int elapsed =

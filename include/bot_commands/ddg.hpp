@@ -9,7 +9,7 @@ cURLpp::Cleanup clean;
 curlpp::Easy request;
 curlpp::options::WriteStream ws(&outstream);
 request.setOpt(ws);
-request.setOpt<curlpp::options::Url>("http://api.duckduckgo.com/?q=" + query + "&format=json");
+request.setOpt<curlpp::options::Url>("http://api.duckduckgo.com/?q=" + cURLpp::escape(query) + "&format=json");
 request.setOpt(curlpp::options::Verbose(false));
 
 request.setOpt(curlpp::options::CustomRequest("GET"));
@@ -30,7 +30,7 @@ if (returned["Type"].get<std::string>() == "A") {
     source = returned["AbstractSource"].get<std::string>();
   }
   if (!returned["Image"].is_null()) {
-    em.set_thumbnail(returned["Image"].get<std::string>());
+    em.set_image(returned["Image"].get<std::string>());
   }
   em.add_field("Source", "[" + source + "](" + returned["AbstractURL"].get<std::string>() + ")");
   std::cout << em.data.dump(4) << '\n';

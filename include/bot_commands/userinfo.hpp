@@ -15,10 +15,8 @@ void userinfo_command(json jmessage,
 
 
   Embed em;
-  std::cout << "ab" << '\n';
   std::string user_id_c_str = jmessage["author"]["id"].get<std::string>();
   uint64_t user_id_int = std::strtoull(user_id_c_str.c_str(), nullptr, 10);
-std::cout << "abc" << '\n';
     std::string username = jmessage["author"]["username"].get<std::string>();
   std::string avatar = jmessage["author"]["avatar"].get<std::string>();
   std::string full_name = username + "#" +
