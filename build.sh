@@ -19,17 +19,16 @@ cd build
 if [ -f CMakeCache.txt ]; then
     rm * -rf
 fi
-export CC=clang-5.0
-export CXX=clang++-5.0
 export VERBOSE=1
 echo "using teh cmake"
 cmake .. -DTEST=yes
 echo "using make"
 make clean
-if make -j`nproc` VERBOSE=1 ; then
-	redis-server &
-	sleep 5
-	./KittehBot++
-else
-	exit 1
-fi
+
+#if make -j`nproc` VERBOSE=1 ; then
+#	redis-server &
+#	sleep 5
+#	./KittehBot++
+#else
+#	exit 1
+#fi
