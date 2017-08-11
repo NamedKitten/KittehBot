@@ -22,14 +22,17 @@ pipeline {
         success {
         sh 'python3 jenkins.py success $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
 	cleanWs()
+        deleteDir()
         }
         failure {
         sh 'python3 jenkins.py failure $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
 	cleanWs()
+	deleteDir()
         }
         unstable {
         sh 'python3 jenkins.py unstable $(git --no-pager show -s --format=\'%an\' HEAD~) $(git log --format="%H" -n 1)'
 	cleanWs()
+        deleteDir()
         }
     }
 }
