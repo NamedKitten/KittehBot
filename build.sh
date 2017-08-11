@@ -1,9 +1,10 @@
 #!/bin/bash
 echo `whoami`
 echo `nproc`
+ls -lah
 rm lib/* -rf
 echo "doing teh git"
-git submodule update --init --recursive --remote --force --depth 1
+git submodule update --init --recursive --force
 echo "making teh build"
 mkdir build
 echo "going into build"
