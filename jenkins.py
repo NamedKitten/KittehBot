@@ -46,4 +46,3 @@ headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
 print(json)
 
 resp = requests.post(WEBHOOK_URL, json=json)
-print(resp.json())
