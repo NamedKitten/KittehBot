@@ -1,7 +1,7 @@
 pipeline {
     agent {
         docker {
-            image 'namedkitten/cpp-env'
+            image 'namedkitten/cpp-bot'
 	          args  '-u 0'
         }
     }
