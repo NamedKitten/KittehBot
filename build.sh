@@ -29,6 +29,7 @@ if make -j`nproc` VERBOSE=1 ; then
 #	redis-server &
 #	sleep 5
 #	./KittehBot++
+        sleep 1
 else
 	exit 1
 fi
