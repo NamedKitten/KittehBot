@@ -25,10 +25,10 @@ cmake .. -DTEST=yes
 echo "using make"
 make clean
 
-#if make -j`nproc` VERBOSE=1 ; then
+if make -j`nproc` VERBOSE=1 ; then
 #	redis-server &
 #	sleep 5
 #	./KittehBot++
-#else
-#	exit 1
-#fi
+else
+	exit 1
+fi
