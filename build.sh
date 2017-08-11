@@ -5,7 +5,7 @@ ls -lah
 echo potato
 rm lib/* -rf
 echo "doing teh git"
-git submodule update --init --recursive --force
+git submodule update --init --recursive --force --remote
 echo "making teh build"
 mkdir build
 echo "going into build"
