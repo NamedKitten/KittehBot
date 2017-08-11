@@ -1,0 +1,10 @@
+[submodule "lib/hexicord"]
+	path = lib/hexicord
+	url = http://github.com/hexicord/hexicord
+	branch = dev-foxcpp
+[submodule "lib/libnamedkitten"]
+	path = lib/libnamedkitten
+	url = https://github.com/namedkitten/libnamedkitten
+[submodule "lib/redisclient"]
+	path = lib/redisclient
+	url = https://github.com/nekipelov/redisclient.git
