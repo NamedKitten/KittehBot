@@ -1,5 +1,5 @@
 void shell_command(std::string message, std::string sid, std::string uid,
-                   discordpp::Bot *bot) {
+                   Hexicord::Client *client) {
   json application = get_application(bot);
 
   if (application["owner"]["id"].get<std::string>() == uid) {

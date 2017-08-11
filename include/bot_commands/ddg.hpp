@@ -1,4 +1,4 @@
-void ddg_command(json jmessage, std::string message, discordpp::Bot *bot) {
+void ddg_command(json jmessage, std::string message, Hexicord::Client *client) {
 std::string query = message.substr(4, message.length());
 std::string channel_id = jmessage["channel_id"].get<std::string>();
 
@@ -43,7 +43,7 @@ if (returned["Type"].get<std::string>() == "A") {
     em.add_field("Source", "[Site]({" + returned["RelatedTopics"][0]["FirstURL"].get<std::string>() + "})");
 }
 
-bot->call("/channels/" + channel_id + "/messages",
+client.sendRestRequest("/channels/" + channel_id + "/messages",
 {{"embed", em.data}}, "POST");
 
 

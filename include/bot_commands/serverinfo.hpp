@@ -1,11 +1,11 @@
 void serverinfo_command(json jmessage,
-                      discordpp::Bot *bot) {
+                      Hexicord::Client& client, json guilds) {
   std::string channel_id = jmessage["channel_id"].get<std::string>();
-  bot->call("/channels/" + channel_id, {}, "GET", [channel_id, jmessage](discordpp::Bot *bot, json msg) {
+  json msg = client.sendRestRequest("GET", "/channels/" + channel_id, {});
   std::string gid = msg["guild_id"].get<std::string>();
   Embed em;
-std::cout << "na" << '\n';
-  json guild_json = bot->guilds_[gid];
+  std::cout << "na" << '\n';
+  json guild_json = guilds[gid];
   int verification_level_int = guild_json["verification_level"];
   std::string verification_level = "";
   if (verification_level_int  == 0) {
@@ -85,6 +85,6 @@ std::cout << "na" << '\n';
 
   em.add_field("Other miscellaneous info", info);
 
-  bot->call("/channels/" + channel_id + "/messages", {{"embed", em.data}, {"content", nullptr}}, "POST");
-  });
+  client.sendRestRequest("POST", "/channels/" + channel_id + "/messages", {{"embed", em.data}, {"content", nullptr}});
+
 }

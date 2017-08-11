@@ -1,5 +1,5 @@
 void userinfo_command(json jmessage,
-                      discordpp::Bot *bot) {
+                      Hexicord::Client& client, json presences) {
 
   std::string user_id = jmessage["author"]["id"].get<std::string>();
   std::string channel_id = jmessage["channel_id"].get<std::string>();
@@ -7,11 +7,9 @@ void userinfo_command(json jmessage,
     jmessage["author"] = jmessage["mentions"][0];
     user_id = jmessage["author"]["id"];
   }
-  bot->call("/channels/" + channel_id, {}, "GET", [user_id, channel_id, jmessage](discordpp::Bot *bot, json msg) {
+  json msg = client.sendRestRequest("GET", "/channels/" + channel_id, {});
   std::string gid = msg["guild_id"].get<std::string>();
-  bot->call("/guilds/" + gid + "/members/" + user_id, {}, "GET", [user_id, channel_id, jmessage, gid](discordpp::Bot *bot, json msg) {
-
-  json mem = msg;
+  json mem = client.sendRestRequest("GET", "/guilds/" + gid + "/members/" + user_id, {});
 
 
   Embed em;
@@ -28,7 +26,7 @@ void userinfo_command(json jmessage,
   em.set_thumbnail(avatar_small);
   em.set_author(full_name, "", avatar_small);
 
-  json pre = bot->presences_[user_id];
+  json pre = presences[user_id];
 
   std::string stata = pre["status"].get<std::string>();
   if (stata == "dnd") {
@@ -71,8 +69,6 @@ void userinfo_command(json jmessage,
   em.add_field("Roles", roles, true);
   }
 
-  bot->call("/channels/" + channel_id + "/messages", {{"embed", em.data}}, "POST");
+  client.sendRestRequest("POST", "/channels/" + channel_id + "/messages", {{"embed", em.data}});
 
-});
-});
 }

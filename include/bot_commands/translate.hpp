@@ -1,4 +1,4 @@
-void translate_command(json jmessage, std::string message, discordpp::Bot *bot) {
+void translate_command(json jmessage, std::string message, Hexicord::Client *client) {
 std::string query = message.substr(10, message.length());
 std::string channel_id = jmessage["channel_id"].get<std::string>();
 
@@ -22,7 +22,7 @@ json returned = json::parse(outstream.str());
 std::cout << returned.dump(4) << '\n';
 
 
-bot->call("/channels/" + channel_id + "/messages",
+client.sendRestRequest("/channels/" + channel_id + "/messages",
 {{"content", returned["text"][0].get<std::string>()}}, "POST");
 
 

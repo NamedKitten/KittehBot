@@ -1,6 +1,5 @@
 #pragma once
 #include <string>
-#include <discordpp/bot.hh>
 using json = nlohmann::json;
 
 std::string bold(std::string text) {

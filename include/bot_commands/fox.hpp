@@ -28,7 +28,7 @@ throw; // fts, std::terminate, no program - no problems.
 }
 
 
-void fox_command(json jmessage, discordpp::Bot *bot) {
+void fox_command(json jmessage, Hexicord::Client *client) {
 
   send_message(bot, jmessage["channel_id"].get<std::string>(),
                {{"content", "What does the fox say? The fox says bork."}});
