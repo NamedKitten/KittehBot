@@ -7,7 +7,6 @@ set(TEST "${TEST}")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
-include(cotire)
 
 # Get the current working branch
 execute_process(
@@ -27,7 +26,6 @@ execute_process(
 
 SET(VERSION "2.0.0:${GIT_BRANCH}:${GIT_COMMIT_HASH}")
 
-cotire(KittehBot++)
 
 set(SOURCE_FILES main.cc)
 
@@ -43,7 +41,6 @@ find_package(Boost REQUIRED system timer date_time)
 message(STATUS "${PROJECT_NAME} version: ${VERSION_FULL}")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sysconf.h)
 
-cotire(KittehBot++)
 
 INCLUDE_DIRECTORIES(
         ${Boost_INCLUDE_DIRS}
