@@ -1,6 +1,6 @@
 [submodule "lib/hexicord"]
 	path = lib/hexicord
-	url = http://github.com/hexicord/hexicord
+	url = https://github.com/Hexicord/Hexicord
 	branch = dev-foxcpp
 [submodule "lib/libnamedkitten"]
 	path = lib/libnamedkitten
