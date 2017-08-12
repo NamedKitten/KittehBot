@@ -124,7 +124,7 @@ int main(int argc, const char** argv) {
 
   result = redis.command("GET", {"whitelistedIDs"});
 
-if( result.isError() )
+if( result.isError() | result.toString() == "" )
 {
   std::vector<char> vec = {};
     std::cout << "Adding whitelisted IDs list." << "\n";
