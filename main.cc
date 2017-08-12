@@ -126,7 +126,7 @@ int main(int argc, const char** argv) {
 
 if( result.isError() )
 {
-  std::vector<uint64_t> vec = {};
+  std::vector<char> vec = {};
     std::cout << "Adding whitelisted IDs list." << "\n";
     redis.command("SET", {"whitelistedIDs", vec});
 
