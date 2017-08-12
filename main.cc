@@ -120,6 +120,15 @@ int main(int argc, const char** argv) {
               << "\n";
     redis.command("SET", {"prefix", getenv("PREFIX")});
   }
+  
+  result = redis.command("GET", {"whitelistedIDs"});
+
+if( result.isError() )
+{
+    std::cout << "Adding whitelisted IDs list." << "\n";
+    redis.command("SET", {"whitelistedIDs", std::vector<uint64_t>});
+
+}
 
   std::cout << "Starting bot..."
             << "\n";
