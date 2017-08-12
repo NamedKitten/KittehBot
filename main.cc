@@ -120,7 +120,8 @@ int main(int argc, const char** argv) {
               << "\n";
     redis.command("SET", {"prefix", getenv("PREFIX")});
   }
-  
+  redisclient::RedisValue result;
+
   result = redis.command("GET", {"whitelistedIDs"});
 
 if( result.isError() )
