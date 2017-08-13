@@ -184,8 +184,10 @@ if( result.isError() | result.toString() == "" )
             //set_command(payload, message, redis, client);
           } else if (!m.find(p + "ddg ")) {
             //ddg_command(payload, message, client);
-          } else if (!m.find(p + "translate ")) {
-            //translate_command(payload, message, client);
+          } else if (!m.find(p + "invite")) {
+            json application = client.sendRestRequest("GET", "/oauth2/applications/@me", {});
+            client.sendRestRequest("POST", "/channels/" + cid + "/messages",
+            {{"content", "https://discordapp.com/oauth2/authorize?client_id=" + application["id"] + "&scope=bot"}});
           }
           std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
           int elapsed =
@@ -202,6 +204,7 @@ if( result.isError() | result.toString() == "" )
           }
         }
       }
+      //https://discordapp.com/oauth2/authorize?client_id=335846213477859349&scope=bot&permissions=0
         return std::vector<json>();
       });
 
@@ -210,7 +213,7 @@ if( result.isError() | result.toString() == "" )
       std::cout << "Recommended shards count: " << pair.second << '\n';
 
       std::cout << "Connecting to gateway...\n";
-      client.connectToGateway(pair.first, 1, 2);
+      client.connectToGateway(pair.first);
 
       std::thread second_thread([]() { ios.run(); });
       ios.run();

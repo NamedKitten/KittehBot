@@ -3,9 +3,7 @@ void set_command(json jmessage, std::string message, redisclient::RedisSyncClien
     std::string user_id = jmessage["author"]["id"].get<std::string>();
     std::string channel_id = jmessage["channel_id"].get<std::string>();
 
-    client.sendRestRequest( "/oauth2/applications/@me", {}, "GET", [user_id, channel_id, message, &redis, jmessage](Hexicord::Client *client, json msg)
-    {
-        json application = msg;
+    json application = client.sendRestRequest("GET", "/oauth2/applications/@me", {});
         if (application["owner"]["id"].get<std::string>() == user_id)
         {
             std::string command = message.substr(4, message.length());
@@ -20,8 +18,7 @@ void set_command(json jmessage, std::string message, redisclient::RedisSyncClien
                     {{"content", "The prefix has been set to `" + prefix + "`."}},
                     "POST");
             }
-
-            if (!command.find("name ") or !command.find("username "))
+            else if (!command.find("name ") or !command.find("username "))
             {
                 std::string username;
                 if (!command.find("name "))
@@ -46,5 +43,4 @@ void set_command(json jmessage, std::string message, redisclient::RedisSyncClien
                 {{"content", "Only the bots owner (" + application["owner"]["username"].get<std::string>() + ") can use this command."}}, "POST");
             }
         }
-    });
 }
