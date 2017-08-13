@@ -155,7 +155,10 @@ if( result.isError() | result.toString() == "" )
         std::string m = payload["content"].get<std::string>();
         std::string cid = payload["channel_id"].get<std::string>();
         std::string uid = payload["author"]["id"].get<std::string>();
+        redisclient::RedisValue ids = redis.command("GET", {"whitelistedIDs"});
+
         if (!m.find(p)) {
+          if (!std::find(ids.begin(), ids.end(), uid.c_str()) != ids.end())
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = payload["content"].get<std::string>();
@@ -187,6 +190,14 @@ if( result.isError() | result.toString() == "" )
               std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
                   .count();
           std::cout << boost::lexical_cast<std::string>(elapsed) << '\n';
+        } else {
+          if (!m.find(p + "whitelist")) {
+            ids.push_back(ids.c_string());
+            redis.command("SET", {"whitelistedIDs", ids});
+          } else {
+            client.sendRestRequest("POST", "/channels/" + channel_id + "/messages/",
+            {{"content", "boop"}});
+          }
         }
         return std::vector<json>();
       });
