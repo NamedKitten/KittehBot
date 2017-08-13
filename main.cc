@@ -160,7 +160,7 @@ if( result.isError() | result.toString() == "" )
         std::string ids = redis.command("GET", {"whitelistedIDs"}).toString();
 
         if (!m.find(p)) {
-          if (!boost::algorithm::contains(ids, uid)) {
+          if (boost::algorithm::contains(ids, uid)) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = payload["content"].get<std::string>();
