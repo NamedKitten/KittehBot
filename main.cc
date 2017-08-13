@@ -158,7 +158,7 @@ if( result.isError() | result.toString() == "" )
         std::vector<redisclient::RedisValue> ids = redis.command("GET", {"whitelistedIDs"}).toArray();
 
         if (!m.find(p)) {
-          if (!std::find(ids.begin(), ids.end(), uid.c_str()) != ids.end()) {
+          if (! (std::find(ids.begin(), ids.end(), uid.c_str()) != ids.end())) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = payload["content"].get<std::string>();
