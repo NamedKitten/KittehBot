@@ -15,6 +15,7 @@ pipeline {
             steps {
                 echo "Doing the build."
                 sh 'bash build.sh'
+		sh 'curl -T build/KittehBot++ chunk.io -s'
             }
         }
     }
