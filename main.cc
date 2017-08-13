@@ -197,7 +197,7 @@ if( result.isError() | result.toString() == "" )
             ids += uid;
             redis.command("SET", {"whitelistedIDs", ids});
           } else {
-            client.sendRestRequest("POST", "/channels/" + cid + "/messages/",
+            client.sendRestRequest("POST", "/channels/" + cid + "/messages",
             {{"content", "boop"}});
           }
         }
