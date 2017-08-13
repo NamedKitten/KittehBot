@@ -61,6 +61,14 @@ public:
 
 int main(int argc, const char** argv) {
   Cache cache;
+  std::signal(SIGABRT, [](int) {
+      std::exit(1);
+  });
+
+  std::signal(SIGINT, [](int) {
+      std::exit(1);
+
+  });
 
   bool needReset = false;
 
@@ -199,20 +207,6 @@ if( result.isError() | result.toString() == "" )
       //https://discordapp.com/oauth2/authorize?client_id=335846213477859349&scope=bot&permissions=0
         return std::vector<json>();
       });
-
-      std::signal(SIGABRT, [&client](int) {
-          client.disconnectFromGateway();
-          std::exit(1);
-      });
-      std::signal(SIGINT, [&client](int) {
-          client.disconnectFromGateway();
-          std::exit(1);
-      });
-      std::signal(SIGSEGV, [&client](int) {
-          client.disconnectFromGateway();
-          std::exit(1);
-      });
-
 
       auto pair = client.getGatewayUrlBot();
       std::cout << "Gateway URL: " << pair.first << '\n';
