@@ -33,9 +33,9 @@ namespace conversions = NamedKitten::conversions;
 #include <bot_commands/userinfo.hpp>
 #include <bot_commands/test.hpp>
 #include <bot_commands/version.hpp>
+#include <bot_commands/fox.hpp>
 
 /*
-#include <bot_commands/fox.hpp>
 #include <bot_commands/shell.hpp>
 #include <bot_commands/set.hpp>
 #include <bot_commands/ddg.hpp>
@@ -171,7 +171,7 @@ if( result.isError() | result.toString() == "" )
           } else if (!m.find(p + "test")) {
             test_command(payload, client);
           } else if (!m.find(p + "fox")) {
-            //fox_command(payload, client);
+            fox_command(payload, client);
           } else if (!m.find(p + "ping")) {
             ping_command(payload, client);
           } else if (!m.find(p + "userinfo")) {
