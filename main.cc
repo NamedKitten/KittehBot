@@ -198,7 +198,7 @@ if( result.isError() | result.toString() == "" )
             redis.command("SET", {"whitelistedIDs", ids});
           } else {
             client.sendRestRequest("POST", "/channels/" + cid + "/messages",
-            {{"content", "boop"}});
+            {{"content", "In order to use this bot you must agree that you wish for all loggable data related to you can be collected. If you agree to this then run `" + p + "whitelist`."}});
           }
         }
       }
