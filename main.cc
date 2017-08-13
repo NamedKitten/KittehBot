@@ -200,15 +200,15 @@ if( result.isError() | result.toString() == "" )
         return std::vector<json>();
       });
 
-      std::signal(SIGABRT, [](int) {
+      std::signal(SIGABRT, [&client](int) {
           client.disconnectFromGateway();
           std::exit(1);
       });
-      std::signal(SIGINT, [](int) {
+      std::signal(SIGINT, [&client](int) {
           client.disconnectFromGateway();
           std::exit(1);
       });
-      std::signal(SIGSEGV, [](int) {
+      std::signal(SIGSEGV, [&client](int) {
           client.disconnectFromGateway();
           std::exit(1);
       });
