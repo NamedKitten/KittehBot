@@ -155,7 +155,7 @@ if( result.isError() | result.toString() == "" )
         std::string m = payload["content"].get<std::string>();
         std::string cid = payload["channel_id"].get<std::string>();
         std::string uid = payload["author"]["id"].get<std::string>();
-        redisclient::RedisValue ids = redis.command("GET", {"whitelistedIDs"});
+        std::vector<char> ids = redis.command("GET", {"whitelistedIDs"}).toArray();
 
         if (!m.find(p)) {
           if (!std::find(ids.begin(), ids.end(), uid.c_str()) != ids.end())
