@@ -187,7 +187,7 @@ if( result.isError() | result.toString() == "" )
           } else if (!m.find(p + "invite")) {
             json application = client.sendRestRequest("GET", "/oauth2/applications/@me", {});
             client.sendRestRequest("POST", "/channels/" + cid + "/messages",
-            {{"content", "https://discordapp.com/oauth2/authorize?client_id=" + application["id"] + "&scope=bot"}});
+            {{"content", "https://discordapp.com/oauth2/authorize?client_id=" + application["id"].get<std::string>() + "&scope=bot"}});
           }
           std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
           int elapsed =
