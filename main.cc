@@ -126,9 +126,8 @@ int main(int argc, const char** argv) {
 
 if( result.isError() | result.toString() == "" )
 {
-  std::vector<char> vec = {};
     std::cout << "Adding whitelisted IDs list." << "\n";
-    redis.command("SET", {"whitelistedIDs", vec});
+    redis.command("SET", {"whitelistedIDs", std::to_string(" ")});
 
 }
 
@@ -155,10 +154,10 @@ if( result.isError() | result.toString() == "" )
         std::string m = payload["content"].get<std::string>();
         std::string cid = payload["channel_id"].get<std::string>();
         std::string uid = payload["author"]["id"].get<std::string>();
-        std::vector<redisclient::RedisValue> ids = redis.command("GET", {"whitelistedIDs"}).toArray();
+        std::string ids = redis.command("GET", {"whitelistedIDs"}).toString();
 
         if (!m.find(p)) {
-          if (! (std::find(ids.begin(), ids.end(), uid.c_str()) != ids.end())) {
+          if (!(ids.find(uid) != std::string::npos)) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = payload["content"].get<std::string>();
@@ -192,7 +191,7 @@ if( result.isError() | result.toString() == "" )
           std::cout << boost::lexical_cast<std::string>(elapsed) << '\n';
         } else {
           if (!m.find(p + "whitelist")) {
-            ids.push_back(ids.c_string());
+            ids += uid;
             redis.command("SET", {"whitelistedIDs", ids});
           } else {
             client.sendRestRequest("POST", "/channels/" + channel_id + "/messages/",
