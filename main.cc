@@ -126,8 +126,9 @@ int main(int argc, const char** argv) {
 
 if( result.isError() | result.toString() == "" )
 {
+  std::string a = "";
     std::cout << "Adding whitelisted IDs list." << "\n";
-    redis.command("SET", {"whitelistedIDs", std::to_string(" ")});
+    redis.command("SET", {"whitelistedIDs", a});
 
 }
 
