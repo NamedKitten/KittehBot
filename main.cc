@@ -210,7 +210,7 @@ if( result.isError() | result.toString() == "" )
       std::cout << "Recommended shards count: " << pair.second << '\n';
 
       std::cout << "Connecting to gateway...\n";
-      client.connectToGateway(pair.first);
+      client.connectToGateway(pair.first, 1, 2);
 
       std::thread second_thread([]() { ios.run(); });
       ios.run();
