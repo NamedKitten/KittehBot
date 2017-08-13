@@ -1,7 +1,7 @@
 [submodule "lib/libnamedkitten"]
 	path = lib/libnamedkitten
 	url = https://github.com/namedkitten/libnamedkitten
-        branch = devx
+        branch = dev
 [submodule "lib/redisclient"]
 	path = lib/redisclient
 	url = https://github.com/nekipelov/redisclient.git
