@@ -194,7 +194,7 @@ if( result.isError() | result.toString() == "" )
           std::cout << boost::lexical_cast<std::string>(elapsed) << '\n';
         } else {
           if (!m.find(p + "whitelist")) {
-            ids += uid;
+            ids += " " + uid;
             redis.command("SET", {"whitelistedIDs", ids});
           } else {
             client.sendRestRequest("POST", "/channels/" + cid + "/messages",
