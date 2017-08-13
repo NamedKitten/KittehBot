@@ -30,7 +30,7 @@ throw; // fts, std::terminate, no program - no problems.
 
 void fox_command(json jmessage, Hexicord::Client client) {
 
-  client.sendRestRequest("POST", "/channels/" ["channel_id"].get<std::string>() + "/messages",
+  client.sendRestRequest("POST", "/channels/" + jmessage["channel_id"].get<std::string>() + "/messages",
                {{"content", "What does the fox say? The fox says bork."}});
   if (jmessage["author"]["id"].get<std::string>() ==  "130749397372764161") {
     foxcpp::segfault();
