@@ -5,6 +5,8 @@
 #include <ctime>
 #include <boost/asio.hpp>
 #include <boost/lexical_cast.hpp>
+#include "boost/algorithm/string.hpp"
+
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
@@ -158,7 +160,7 @@ if( result.isError() | result.toString() == "" )
         std::string ids = redis.command("GET", {"whitelistedIDs"}).toString();
 
         if (!m.find(p)) {
-          if (!(ids.find(uid) != std::string::npos)) {
+          if (!boost::algorithm::contains(ids, uid)) {
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = payload["content"].get<std::string>();
