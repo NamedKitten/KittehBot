@@ -34,10 +34,10 @@ namespace conversions = NamedKitten::conversions;
 #include <bot_commands/test.hpp>
 #include <bot_commands/version.hpp>
 #include <bot_commands/fox.hpp>
-
-/*
 #include <bot_commands/shell.hpp>
 #include <bot_commands/set.hpp>
+
+/*
 #include <bot_commands/ddg.hpp>
 #include <bot_commands/translate.hpp>
 */
@@ -179,9 +179,9 @@ if( result.isError() | result.toString() == "" )
           } else if (!m.find(p + "serverinfo")) {
             serverinfo_command(payload, client, cache.guilds);
           } else if (!m.find(p + "shell")) {
-            //shell_command(message, sid, uid, sclient);
+            shell_command(payload, message, client);
           } else if (!m.find(p + "set ")) {
-            //set_command(payload, message, redis, client);
+            set_command(payload, message, redis, client);
           } else if (!m.find(p + "ddg ")) {
             //ddg_command(payload, message, client);
           } else if (!m.find(p + "invite")) {

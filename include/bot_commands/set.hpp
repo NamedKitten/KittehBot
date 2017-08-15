@@ -1,4 +1,4 @@
-void set_command(json jmessage, std::string message, redisclient::RedisSyncClient &redis, Hexicord::Client *client)
+void set_command(json jmessage, std::string message, redisclient::RedisSyncClient &redis, Hexicord::Client& client)
 {
     std::string user_id = jmessage["author"]["id"].get<std::string>();
     std::string channel_id = jmessage["channel_id"].get<std::string>();
@@ -37,10 +37,10 @@ void set_command(json jmessage, std::string message, redisclient::RedisSyncClien
                         "POST");
                 });
             }
-            else
-            {
-                client.sendRestRequest("/channels/" + channel_id + "/messages",
-                {{"content", "Only the bots owner (" + application["owner"]["username"].get<std::string>() + ") can use this command."}}, "POST");
-            }
-        }
+
+        }            else
+                    {
+                        client.sendRestRequest("/channels/" + channel_id + "/messages",
+                        {{"content", "Only the bots owner (" + application["owner"]["username"].get<std::string>() + ") can use this command."}}, "POST");
+                    }
 }
