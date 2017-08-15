@@ -6,5 +6,5 @@
 	url = https://github.com/nekipelov/redisclient.git
 [submodule "lib/hexicord"]
 	path = lib/hexicord
-	url = https://github.com/Hexicord/Hexicord
+	url = https://github.com/foxcpp/Hexicord
 	branch = dev
