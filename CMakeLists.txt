@@ -36,6 +36,8 @@ add_subdirectory(lib/hexicord)
 
 set_target_properties(benchmark parsertest redisvaluetest async_set_get2 async_pubsub async_pubsub2 async_set_get sync_set_get PROPERTIES EXCLUDE_FROM_ALL ON EXCLUDE_FROM_DEFAULT_BUILD ON)
 
+set(Boost_USE_STATIC_LIBS   ON)
+
 find_package(Boost REQUIRED system timer date_time)
 
 message(STATUS "${PROJECT_NAME} version: ${VERSION_FULL}")
