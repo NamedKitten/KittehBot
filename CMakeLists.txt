@@ -4,7 +4,7 @@ project(KittehBot++)
 set(CMAKE_CXX_STANDARD 14)
 set(TEST "${TEST}")
 # -ggdb -g3 -Os
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Og -ggdb -g3")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -g3 -Og")
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option(USE_CLANG "build bot with clang" OFF)
 if(USE_CLANG)
@@ -94,8 +94,6 @@ TARGET_LINK_LIBRARIES(
         redisclient
         namedkitten
         hexicord
-        -Og
-
 )
 
 
