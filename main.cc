@@ -3,39 +3,44 @@
 #include <stdlib.h>
 #include <vector>
 #include <ctime>
-#include <boost/asio.hpp>
-#include <boost/lexical_cast.hpp>
-#include "boost/algorithm/string.hpp"
-
-#include <boost/algorithm/string/predicate.hpp>
-#include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
+#include <cstdio>
+#define ndebug "yes"
+#include <exception>
+#include <bot_utils/string_utils.hpp>
+#include <boost/algorithm/string.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/timer.hpp>
 #include <redisclient/redissyncclient.h>
 #include <boost/asio/io_service.hpp>
-//#include <boost/asio/ip/address.hpp>
-namespace asio = boost::asio;
-using boost::system::error_code;
-using aios_ptr = std::shared_ptr<asio::io_service>;
+#include <boost/asio/ip/address.hpp>
 #include <hexicord/client.hpp>
 #include <csignal>
 #include <thread>
-using nlohmann::json;
 #include <conversions.hpp>
+#include <spdlog/spdlog.h>
+
+//extern std::shared_ptr<spd::logger> logger;
+
+namespace spd = spdlog;
 namespace conversions = NamedKitten::conversions;
+using nlohmann::json;
+//using boost::system::error_code;
+using aios_ptr = std::shared_ptr<boost::asio::io_service>;
+boost::asio::io_service ioService;
+redisclient::RedisSyncClient redis(ioService);
+
+
 #include <bot_utils/chat.hpp>
 #include <bot_utils/shell.hpp>
-//#include <bot_utils/bothelper.hpp>
 #include <bot_utils/string_utils.hpp>
 #include <bot_commands/ping.hpp>
 #include <bot_commands/serverinfo.hpp>
 #include <bot_commands/userinfo.hpp>
-#include <bot_commands/test.hpp>
 #include <bot_commands/version.hpp>
 #include <bot_commands/fox.hpp>
-#include <bot_commands/shell.hpp>
-#include <bot_commands/set.hpp>
+//#include <bot_commands/shell.hpp>
+#include <bot_commands/cookies.hpp>
+//#include <bot_commands/sets.hpp>
 
 /*
 #include <bot_commands/ddg.hpp>
@@ -60,6 +65,12 @@ public:
 };
 
 int main(int argc, const char** argv) {
+
+  std::vector<spdlog::sink_ptr> sinks;
+  auto logger = spdlog::stdout_color_mt("KittehBot++");
+
+
+  std::srand(std::time(0));
   Cache cache;
   std::signal(SIGABRT, [](int) {
       std::exit(1);
@@ -69,6 +80,7 @@ int main(int argc, const char** argv) {
       std::exit(1);
 
   });
+
 
   bool needReset = false;
 
@@ -80,22 +92,19 @@ int main(int argc, const char** argv) {
     }
   }*/
 
-  std::cout << "Welcome." << '\n';
-  boost::asio::ip::address address =
-      boost::asio::ip::address::from_string("127.0.0.1");
+  logger->info("Welcome");
 
-  const unsigned short port = 6379;
 
-  boost::asio::io_service ioService;
-  redisclient::RedisSyncClient redis(ioService);
+
   std::string errmsg;
-  if (!redis.connect(address, port, errmsg)) {
-    std::cerr << "Can't connect to redis: " << errmsg << std::endl;
+  if (!redis.connect(boost::asio::ip::address::from_string("127.0.0.1"), 6379, errmsg)) {
+    logger->error("Can't connect to redis: " + errmsg + "\n");
     exit(1);
   }
 
+
   if (redis.command("GET", {"isSetup"}).toString() ==
-       "false") {
+       "false" | redis.command("GET", {"isSetup"}).isNull()) {
     std::cout << "Welcome to the setup.\n";
     std::cout << "Please enter your token. ";
     std::string tokens;
@@ -142,6 +151,9 @@ if( result.isError() | result.toString() == "" )
 
   client.eventDispatcher.addHandler(Hexicord::Event::PresenceUpdate, [&cache](const nlohmann::json& payload) {
     cache.presences[payload["user"]["id"].get<std::string>()] = payload;
+    if (payload["status"].is_null()) {
+      cache.presences[payload["user"]["id"].get<std::string>()]["status"] = "offline";
+    }
 
   });
     client.eventDispatcher.addHandler(Hexicord::Event::GuildCreate, [&cache](const nlohmann::json& payload) {
@@ -152,7 +164,7 @@ if( result.isError() | result.toString() == "" )
 
       }
       });
-  client.eventDispatcher.addHandler(Hexicord::Event::MessageCreate, [&redis, &client, &cache](const nlohmann::json& payload) {
+  client.eventDispatcher.addHandler(Hexicord::Event::MessageCreate, [&client, &cache](const nlohmann::json& payload) {
         std::string p = redis.command("GET", {"prefix"}).toString();
         std::string m = payload["content"].get<std::string>();
         std::string cid = payload["channel_id"].get<std::string>();
@@ -160,7 +172,9 @@ if( result.isError() | result.toString() == "" )
         std::string ids = redis.command("GET", {"whitelistedIDs"}).toString();
 
         if (!m.find(p)) {
-          if (boost::algorithm::contains(ids, uid)) {
+          std::cout << "has prefix" << '\n';
+          if (ids.find(uid)) {
+            std::cout << "is whitelisted" << '\n';
           std::chrono::steady_clock::time_point begin =
               std::chrono::steady_clock::now();
           std::string message = payload["content"].get<std::string>();
@@ -168,8 +182,6 @@ if( result.isError() | result.toString() == "" )
           std::string sid = payload["channel_id"].get<std::string>();
           if (!m.find(p + "version")) {
             version_command(payload, client);
-          } else if (!m.find(p + "test")) {
-            test_command(payload, client);
           } else if (!m.find(p + "fox")) {
             fox_command(payload, client);
           } else if (!m.find(p + "ping")) {
@@ -179,11 +191,11 @@ if( result.isError() | result.toString() == "" )
           } else if (!m.find(p + "serverinfo")) {
             serverinfo_command(payload, client, cache.guilds);
           } else if (!m.find(p + "shell")) {
-            shell_command(payload, message, client);
+            //shell_command(payload, message, client);
           } else if (!m.find(p + "set ")) {
-            set_command(payload, message, redis, client);
-          } else if (!m.find(p + "ddg ")) {
-            //ddg_command(payload, message, client);
+            //set_command(payload, message, redis, client);
+          } else if (!m.find(p + "cookies")) {
+            Bot::Commands::Cookies::cookies_command(message, payload, client);
           } else if (!m.find(p + "invite")) {
             json application = client.sendRestRequest("GET", "/oauth2/applications/@me", {});
             client.sendRestRequest("POST", "/channels/" + cid + "/messages",
@@ -193,9 +205,11 @@ if( result.isError() | result.toString() == "" )
           int elapsed =
               std::chrono::duration_cast<std::chrono::milliseconds>(end - begin)
                   .count();
-          std::cout << boost::lexical_cast<std::string>(elapsed) << '\n';
+          std::cout << std::to_string(elapsed) << '\n';
         } else {
+          std::cout << "isnt whitelisted" << '\n';
           if (!m.find(p + "whitelist")) {
+            std::cout << "getting whitelisted" << '\n';
             ids += " " + uid;
             redis.command("SET", {"whitelistedIDs", ids});
           } else {
@@ -204,7 +218,6 @@ if( result.isError() | result.toString() == "" )
           }
         }
       }
-      //https://discordapp.com/oauth2/authorize?client_id=335846213477859349&scope=bot&permissions=0
         return std::vector<json>();
       });
 

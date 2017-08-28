@@ -1,15 +1,16 @@
-void shell_command(json jmessage, std::string message, Hexicord::Client& client) {
-  std::string user_id = jmessage["author"]["id"].get<std::string>();
-  std::string channel_id = jmessage["channel_id"].get<std::string>();
-  json application = client.sendRestRequest("GET", "/oauth2/applications/@me", {});
+void shell_command(std::string message, std::string sid, std::string uid,
+                   Hexicord::Client *client) {
+  json application = get_application(bot);
 
-  if (application["owner"]["id"].get<std::string>() == user_id) {
-
+  if (application["owner"]["id"].get<std::string>() == uid) {
     std::string command = message.substr(6, message.length());
 
-    client.sendRestRequest("POST", "/channels/" + channel_id + "/messages", {{"content", shell(command)}});
+    json ret = send_message(
+        bot, sid, {{"content", shell(command)}});
+        std::cout << ret.dump(4) << '\n';
   } else {
-   client.sendRestRequest("POST", "/channels/" + channel_id + "/messages",
+   send_message(
+        bot, sid,
          {{"content", "Only the bots owner (" + application["owner"]["username"].get<std::string>() + ") can use this command."}});
   }
 }

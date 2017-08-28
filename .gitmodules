@@ -7,4 +7,4 @@
 [submodule "lib/hexicord"]
 	path = lib/hexicord
 	url = https://github.com/foxcpp/Hexicord
-	branch = dev
+	branch = ratelimit-buffering

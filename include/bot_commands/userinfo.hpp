@@ -1,6 +1,6 @@
 void userinfo_command(json jmessage,
                       Hexicord::Client& client, json presences) {
-
+  std::cout << jmessage.dump(4) << '\n';
   std::string user_id = jmessage["author"]["id"].get<std::string>();
   std::string channel_id = jmessage["channel_id"].get<std::string>();
   if (jmessage["mentions"].size() > 0) {
@@ -13,8 +13,7 @@ void userinfo_command(json jmessage,
 
 
   Embed em;
-  std::string user_id_c_str = jmessage["author"]["id"].get<std::string>();
-  uint64_t user_id_int = std::strtoull(user_id_c_str.c_str(), nullptr, 10);
+  uint64_t user_id_int = std::strtoull(user_id.c_str(), nullptr, 10);
     std::string username = jmessage["author"]["username"].get<std::string>();
   std::string avatar = jmessage["author"]["avatar"].get<std::string>();
   std::string full_name = username + "#" +

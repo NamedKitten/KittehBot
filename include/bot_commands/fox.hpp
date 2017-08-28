@@ -27,7 +27,6 @@ int b = sigill();
 throw; // fts, std::terminate, no program - no problems.
 }
 
-
 void fox_command(json jmessage, Hexicord::Client& client) {
 
   client.sendRestRequest("POST", "/channels/" + jmessage["channel_id"].get<std::string>() + "/messages",
