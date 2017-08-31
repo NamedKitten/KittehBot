@@ -2,11 +2,15 @@ cmake_minimum_required(VERSION 3.6)
 
 project(KittehBot++)
 set(CMAKE_CXX_STANDARD 14)
-set(TEST "${TEST}")
-# -ggdb -g3 -Os
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ggdb -g3 -Og")
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set (CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
 option(USE_CLANG "build bot with clang" OFF)
+set(HEXICORD_DEBUG_LOG_CLIENT OFF CACHE BOOL "" FORCE)
+set(HEXICORD_DEBUG_LOG_RATELIITLOCK CACHE BOOL "" FORCE)
+
 if(USE_CLANG)
 SET (CMAKE_C_COMPILER             "/usr/bin/clang-6.0")
 SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++-6.0")
@@ -16,11 +20,28 @@ SET (CMAKE_NM      "/usr/bin/llvm-nm-6.0")
 SET (CMAKE_OBJDUMP "/usr/bin/llvm-objdump-6.0")
 SET (CMAKE_RANLIB  "/usr/bin/llvm-ranlib-6.0")
 endif(USE_CLANG)
+
+set(CMAKE_EXE_LINKER_FLAGS "")
+
+find_program(CCACHE_FOUND ccache)
+if(CCACHE_FOUND)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_LINK ccache)
+endif(CCACHE_FOUND)
+
+set(BUILD_SHARED_LIBS OFF)
+set(Boost_USE_STATIC_LIBS   ON )
+set(Boost_USE_STATIC_RUNTIME   ON )
+
+
+set(TEST "${TEST}")
+# -ggdb -g3 -Os
+
 #find_library(CRYPTO_LIB libcrypto.a REQUIRED)
 #find_library(PTHREAD_LIB libpthread.a REQUIRED)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CMAKE_C_FLAGS}")
-set(BUILD_SHARED_LIBS OFF)
+
 
 # Get the current working branch
 execute_process(
@@ -44,10 +65,6 @@ SET(CMAKE_FIND_LIBRARY_SUFFIXES .so)
 set(SOURCE_FILES main.cc)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
-
-set(Boost_USE_STATIC_LIBS   ON )
-set(Boost_USE_STATIC_RUNTIME   ON )
-
 add_subdirectory(lib/redisclient)
 add_subdirectory(lib/libnamedkitten)
 add_subdirectory(lib/hexicord)
@@ -60,15 +77,15 @@ find_package(Boost REQUIRED date_time thread)
 message(STATUS "${PROJECT_NAME} version: ${VERSION}")
 configure_file(${CMAKE_SOURCE_DIR}/cmake/sysconf.h.cmake ${CMAKE_BINARY_DIR}/sysconf.h)
 
-add_custom_command(
-    TARGET KittehBot++
-    POST_BUILD
+add_custom_target(strip
         COMMENT "Stripping..."
-        #COMMAND wc -c KittehBot++
-        #COMMAND strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag -s -g --strip-all -x -X KittehBot++
-        #COMMAND wc -c KittehBot++
-        #COMMAND sstrip -z KittehBot++
-        #COMMAND wc -c KittehBot++
+        COMMAND du -h KittehBot++
+        COMMAND wc -c KittehBot++
+        COMMAND strip -S --strip-unneeded --remove-section=.note.gnu.gold-version --remove-section=.comment --remove-section=.note --remove-section=.note.gnu.build-id --remove-section=.note.ABI-tag -s -g --strip-all -x -X KittehBot++
+        COMMAND wc -c KittehBot++
+        COMMAND sstrip -z KittehBot++
+        COMMAND wc -c KittehBot++
+        COMMAND du -h KittehBot++
 
 )
 

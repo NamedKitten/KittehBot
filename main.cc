@@ -11,6 +11,8 @@
 #include <ctime>
 #include <exception>
 #include <hexicord/client.hpp>
+#include <hexicord/config.hpp>
+#include <iomanip>
 #include <memory>
 #include <redisclient/redissyncclient.h>
 #include <spdlog/spdlog.h>
@@ -18,7 +20,6 @@
 #include <string>
 #include <thread>
 #include <vector>
-
 //extern std::shared_ptr<spd::logger> logger;
 
 namespace spd = spdlog;
@@ -26,14 +27,17 @@ namespace conversions = NamedKitten::conversions;
 using nlohmann::json;
 boost::asio::io_service ios;
 std::unique_ptr<Hexicord::Client> client;
+std::unique_ptr<spdlog::logger> logger;
+
 redisclient::RedisSyncClient redis( ios );
 
+#include <bot_commands/about.hpp>
 #include <bot_commands/cookies.hpp>
 #include <bot_commands/fox.hpp>
 #include <bot_commands/ping.hpp>
+#include <bot_commands/profile.hpp>
 #include <bot_commands/serverinfo.hpp>
 #include <bot_commands/userinfo.hpp>
-#include <bot_commands/version.hpp>
 #include <bot_utils/chat.hpp>
 #include <bot_utils/shell.hpp>
 #include <bot_utils/string_utils.hpp>
@@ -61,7 +65,14 @@ public:
 
 int main( int argc, const char** argv ) {
  std::vector<spdlog::sink_ptr> sinks;
- auto logger = spdlog::stdout_color_mt( "KittehBot++" );
+ auto out_sink = std::make_shared<spdlog::sinks::ansicolor_stdout_sink_mt>();
+ auto file_sink = std::make_shared<spdlog::sinks::simple_file_sink_mt>( "log.txt" );
+ sinks.push_back( out_sink );
+ sinks.push_back( file_sink );
+
+ logger.reset( new spdlog::logger( "KittehBot++", begin( sinks ), end( sinks ) ) );
+
+ //auto logger = spdlog::stdout_color_mt( "KittehBot++" );
 
  std::srand( std::time( 0 ) );
  Cache cache;
@@ -130,8 +141,7 @@ int main( int argc, const char** argv ) {
   redis.command( "SET", { "whitelistedIDs", a } );
  }
 
- std::cout << "Starting bot..."
-           << "\n";
+ logger->info( "Starting bot..." );
  std::string token;
  token = redis.command( "GET", { "token" } ).toString();
  //Hexicord::Clientclient(ios, token);
@@ -159,14 +169,13 @@ int main( int argc, const char** argv ) {
       std::string m = payload["content"].get<std::string>();
       std::string cid = payload["channel_id"].get<std::string>();
       std::string uid = payload["author"]["id"].get<std::string>();
-
       if ( !m.find( p ) ) {
        auto start = std::chrono::steady_clock::now();
        std::string message = m;
        message = message.substr( p.length(), message.length() );
        std::string sid = payload["channel_id"].get<std::string>();
-       if ( !m.find( p + "version" ) ) {
-        version_command( payload );
+       if ( !m.find( p + "about" ) ) {
+        about_command( payload, cache.guilds );
        } else if ( !m.find( p + "fox" ) ) {
         fox_command( payload );
        } else if ( !m.find( p + "ping" ) ) {
@@ -183,6 +192,8 @@ int main( int argc, const char** argv ) {
         //set_command(payload, message, redis, client);
        } else if ( !m.find( p + "cookies" ) ) {
         Bot::Commands::Cookies::cookies_command( message, payload );
+       } else if ( !m.find( p + "profile" ) ) {
+        Bot::Commands::Profile::profile_command( message, payload );
        } else if ( !m.find( p + "invite" ) ) {
         json application =
             client->sendRestRequest( "GET", "/oauth2/applications/@me", {} );
@@ -194,9 +205,13 @@ int main( int argc, const char** argv ) {
         client->sendRestRequest(
             "POST", "/channels/" + cid + "/messages",
             { { "content",
-                "```\n" +
-                    std::string( shell( "neofetch > a && sed 's/\x1b\[[0-9;]*m//g'" ) +
-                                 "\n```" ) } } );
+                "```\n" + std::string(
+                              shell( "xfce4-terminal -e \"bash -c 'neofetch > /tmp/a'\" "
+                                     "&& sleep 2 &&  sed 's/\x1b\[[0-9;]*m//g' /tmp/a > "
+                                     "/tmp/b && sed -r \"s/\x1b\[[0-9;]*C?//g\" /tmp/b > "
+                                     "/tmp/c && sed \"s/?25l?7\\w//g\" /tmp/c > /tmp/d "
+                                     "&& sed 's/AD//g' /tmp/d" ) +
+                              "\n```" ) } } );
        }
        auto end = std::chrono::steady_clock::now();
        auto elapsed =

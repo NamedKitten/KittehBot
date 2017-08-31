@@ -11,13 +11,31 @@ std::string emlink( std::string name, std::string url ) {
 
 class Embed {
 public:
- json data = { { "fields", {} } };
+ json data = { { "fields", {} }, { "color", 16755455 } };
  void set_json( json stuff ) { data = stuff; }
  void set_description( std::string description ) { data["description"] = description; }
  void set_title( std::string title ) { data["title"] = title; }
  void set_timestamp( std::string timestamp ) { data["timestamp"] = timestamp; }
  void set_url( std::string url ) { data["url"] = url; }
  void set_color( int color ) { data["color"] = color; }
+ void set_color( std::string color ) {
+  if ( !color.find( "#" ) ) {
+   color = color.substr( 1, color.length() );
+  }
+  if ( color.length() > 6 ) {
+   throw std::runtime_error( "Please input a valid hex code." );
+  }
+  try {
+   std::cout << color << '\n';
+   int color_code = std::strtoul( color.c_str(), nullptr, 16 );
+   data["color"] = color_code;
+   std::cout << color_code << '\n';
+  } catch ( std::exception const& e ) {
+   std::cout << e.what() << '\n';
+   throw std::runtime_error( "Please input a valid hex code." );
+  }
+ }
+
  void set_image( std::string url ) {
   json image = { { "url", url } };
   data["image"] = image;
@@ -37,6 +55,13 @@ public:
  void set_author( std::string name, std::string url = "", std::string icon_url = "" ) {
   json author = { { "name", name }, { "url", url }, { "icon_url", icon_url } };
   data["author"] = author;
+ }
+ void delete_field( std::string name ) {
+  data["fields"].erase( std::remove_if( data["fields"].begin(), data["fields"].end(),
+                                        [name]( const json& field ) {
+                                         return name == field["name"].get<std::string>();
+                                        } ),
+                        data["fields"].end() );
  }
 };
 
